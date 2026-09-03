@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIX Interpreter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #editor, #output {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        #canvas {
+            border: 1px solid #000;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PIX Interpreter<br><a href="https://esolangs.org/wiki/PIX"/></h1>
+    <textarea id="editor" placeholder="Enter PIX code here..."></textarea>
+    <button onclick="runCode()">Run Code</button>
+    <canvas id="canvas" width="320" height="320"></canvas>
+    <textarea id="output" readonly></textarea>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const editor = document.getElementById('editor');
+        const output = document.getElementById('output');
+
+        let palette = [];
+        let screenMode = '16C';
+
+        function runCode() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            output.value = '';
+            palette = [];
+            screenMode = '16C';
+
+            const code = editor.value;
+            const lines = code.split('\n');
+
+            for (const line of lines) {
+                if (line.trim() === '' || line.startsWith('!')) continue;
+                if (line.startsWith('*(')) {
+                    while (!line.includes(')*')) {
+                        i++;
+                    }
+                    continue;
+                }
+
+                const parts = line.trim().split(' ');
+                const command = parts[0];
+
+                switch (command) {
+                    case 'SM':
+                        screenMode = parts[1];
+                        break;
+                    case 'SC':
+                        const index = parseInt(parts[1]);
+                        const color = parts[2];
+                        palette[index] = color;
+                        break;
+                    case 'L':
+                        drawLine(parts);
+                        break;
+                    case 'R':
+                        drawRectangle(parts);
+                        break;
+                    case 'E':
+                        drawEllipse(parts);
+                        break;
+                    case 'C':
+                        drawCircle(parts);
+                        break;
+                    case 'S':
+                        drawSquare(parts);
+                        break;
+                    case 'P':
+                        drawPixel(parts);
+                        break;
+                    default:
+                        output.value += `Unknown command: ${command}\n`;
+                }
+            }
+        }
+
+        function getColor(colorArg) {
+            if (colorArg.startsWith('#')) {
+                return colorArg;
+            } else {
+                const index = parseInt(colorArg);
+                return palette[index] || '#000000';
+            }
+        }
+
+        function drawLine(parts) {
+            const [_, x1, y1, x2, y2, color] = parts;
+            ctx.beginPath();
+            ctx.moveTo(parseInt(x1), parseInt(y1));
+            ctx.lineTo(parseInt(x2), parseInt(y2));
+            ctx.strokeStyle = getColor(color);
+            ctx.stroke();
+        }
+
+        function drawRectangle(parts) {
+            const [_, x, y, width, height, color] = parts;
+            ctx.fillStyle = getColor(color);
+            ctx.fillRect(parseInt(x), parseInt(y), parseInt(width), parseInt(height));
+        }
+
+        function drawEllipse(parts) {
+            const [_, x, y, radiusX, radiusY, color] = parts;
+            ctx.beginPath();
+            ctx.ellipse(parseInt(x), parseInt(y), parseInt(radiusX), parseInt(radiusY), 0, 0, 2 * Math.PI);
+            ctx.fillStyle = getColor(color);
+            ctx.fill();
+        }
+
+        function drawCircle(parts) {
+            const [_, x, y, radius, color] = parts;
+            ctx.beginPath();
+            ctx.arc(parseInt(x), parseInt(y), parseInt(radius), 0, 2 * Math.PI);
+            ctx.fillStyle = getColor(color);
+            ctx.fill();
+        }
+
+        function drawSquare(parts) {
+            const [_, x, y, size, color] = parts;
+            ctx.fillStyle = getColor(color);
+            ctx.fillRect(parseInt(x), parseInt(y), parseInt(size), parseInt(size));
+        }
+
+        function drawPixel(parts) {
+            const [_, x, y, color] = parts;
+            ctx.fillStyle = getColor(color);
+            ctx.fillRect(parseInt(x), parseInt(y), 1, 1);
+        }
+
+        // Initialize with example code
+        editor.value = `! We set the screen mode and pallete
+  ! So cute !
+SM 16C
+SC 1 #ffffff
+SC 2 #1a1c2c
+SC 3 #29366f
+SC 4 #41a6f4
+SC 5 #f4f4f4
+! We draw the actual picture
+! Start
+R 0 0 320 320 1
+R 40 20 200 20 3
+R 20 40 220 220 4
+R 40 60 180 20 1
+! Eyes
+R 40 60 180 20 2
+R 40 80 180 100 5
+R 80 100 20 60 2
+R 160 100 20 60 2
+! Mouth
+R 100 220 60 20 5
+R 80 200 20 20 5
+R 160 200 20 20 5
+! Bottom
+R 20 260 220 20 3
+! Boots
+R 40 280 60 20 2
+R 160 280 60 20 2
+! Tail
+R 240 40 20 220 2
+R 260 160 20 20 2
+R 280 100 20 60 2`;
+    </script>
+</body>
+</html>
