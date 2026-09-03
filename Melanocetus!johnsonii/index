@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html class="client-js" lang="en" dir="ltr"><head>
+<meta charset="UTF-8">
+<title>Melanocetus!johnsonii - Esolang</title>
+<script>(function(){var className="client-js";var cookie=document.cookie.match(/(?:^|; )esolang_wikimwclientpreferences=([^;]+)/);if(cookie){cookie[1].split('%2C').forEach(function(pref){className=className.replace(new RegExp('(^| )'+pref.replace(/-clientpref-\w+$|[^\w-]+/g,'')+'-clientpref-\\w+( |$)'),'$1'+pref+'$2');});}document.documentElement.className=className;}());RLCONF={"wgBreakFrames":false,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"f8af44dd81e62e41e5b881f1","wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Melanocetus!johnsonii","wgTitle":"Melanocetus!johnsonii","wgCurRevisionId":185580,"wgRevisionId":185580,"wgArticleId":25805,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Thematic","Languages","Output only","Deadfish derivatives","2026"],"wgPageViewLanguage":"en","wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"Melanocetus!johnsonii","wgRelevantArticleId":25805,"wgIsProbablyEditable":false,"wgRelevantPageIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgCiteReferencePreviewsActive":true,"wgCheckUserClientHintsHeadersJsApi":["architecture","bitness","brands","fullVersionList","mobile","model","platform","platformVersion"]};
+RLSTATE={"site.styles":"ready","user.styles":"ready","user":"ready","user.options":"loading","skins.vector.styles.legacy":"ready"};RLPAGEMODULES=["site","mediawiki.page.ready","mediawiki.toc","skins.vector.legacy.js","ext.checkUser.clientHints"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.impl(function(){return["user.options@12s5i",function($,jQuery,require,module){mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+}];});});</script>
+<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=skins.vector.styles.legacy&amp;only=styles&amp;skin=vector">
+<script async="" src="/w/load.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
+<style>
+@media screen {
+	.toctoggle{-webkit-user-select:none;-moz-user-select:none;user-select:none;font-size:94%}}
+#mw-teleport-target{position:absolute;z-index:450}</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector">
+<meta name="generator" content="MediaWiki 1.43.9">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=1120">
+<link rel="search" type="application/opensearchdescription+xml" href="/w/rest.php/v1/search" title="Esolang (en)">
+<link rel="EditURI" type="application/rsd+xml" href="//esolangs.org/w/api.php?action=rsd">
+<link rel="canonical" href="https://esolangs.org/wiki/Melanocetus!johnsonii">
+<link rel="license" href="/wiki/Esolang:Copyrights">
+<link rel="alternate" type="application/atom+xml" title="Esolang Atom feed" href="/w/index.php?title=Special:RecentChanges&amp;feed=atom">
+</head>
+<body class="skin-vector-legacy mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Melanocetus_johnsonii rootpage-Melanocetus_johnsonii skin-vector action-view"><div id="mw-page-base" class="noprint"></div>
+<div id="mw-head-base" class="noprint"></div>
+<div id="content" class="mw-body" role="main">
+	<a id="top"></a>
+	<div id="siteNotice"><div id="localNotice" data-nosnippet=""><div class="sitenotice" lang="en" dir="ltr"><p><b>We are currently working on new rules for what content should and shouldn't be allowed on this website, and are looking for feedback! See <a href="/wiki/Esolang:2026_topicality_proposal" title="Esolang:2026 topicality proposal">Esolang:2026 topicality proposal</a> to view and give feedback on the current draft.</b>
+</p></div></div></div>
+	<div class="mw-indicators">
+	</div>
+	<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Melanocetus!johnsonii</span></h1>
+	<div id="bodyContent" class="vector-body">
+		<div id="siteSub" class="noprint">From Esolang</div>
+		<div id="contentSub"><div id="mw-content-subtitle"></div></div>
+		<div id="contentSub2"></div>
+		
+		<div id="jump-to-nav"></div>
+		<a class="mw-jump-link" href="#mw-head">Jump to navigation</a>
+		<a class="mw-jump-link" href="#searchInput">Jump to search</a>
+		<div id="mw-content-text" class="mw-body-content"><div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr"><dl><dd><i>Due to technical limitations the title of this page is incorrect. The actual name is "<b>Melanocetus%21johnsonii</b>"</i></dd></dl>
+<figure class="mw-halign-right" typeof="mw:File/Frame"><a href="/wiki/File:Humpback_anglerfish.png" class="mw-file-description"><img src="data:image/png;base64,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" decoding="async" width="125" height="125" class="mw-file-element"></a><figcaption>Melanocetus%21johnsonii</figcaption></figure>
+<p><b>Melanocetus%21johnsonii</b> is a viperfish-themed lang based on <a href="/wiki/Deadfish" title="Deadfish">Deadfish</a>//<a href="/wiki/Alivefish" title="Alivefish">Alivefish</a>. It is oddly similar to <a href="/wiki/XKCD" title="XKCD">XKCD</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" aria-label="Hide the table of contents"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Commands"><span class="tocnumber">1</span> <span class="toctext">Commands</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Conversion"><span class="tocnumber">1.1</span> <span class="toctext">Conversion</span></a>
+<ul>
+<li class="toclevel-3 tocsection-3"><a href="#a_through_z"><span class="tocnumber">1.1.1</span> <span class="toctext">a through z</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#examples"><span class="tocnumber">2</span> <span class="toctext">examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#XKCD_Random_Number"><span class="tocnumber">2.1</span> <span class="toctext">XKCD Random Number</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#canous_interpeter"><span class="tocnumber">2.2</span> <span class="toctext">canous interpeter</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Commands">Commands</span></h2>
+<p>There is a main accumulator a conversion table and a zeta function.
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td><code>M</code>
+</td>
+<td>Mainlines the accumulator
+</td></tr>
+<tr>
+<td><code>no</code>
+</td>
+<td>Main accumulator becomes accumulator 1
+</td></tr>
+<tr>
+<td><code>ii</code>
+</td>
+<td>Squares accumulator 1
+</td></tr>
+<tr>
+<td><code>#!</code>
+</td>
+<td>Outputs a space; accumulator 1 converts contents to 2 then mains the accumulator.
+</td></tr>
+<tr>
+<td><code>jJ</code>
+</td>
+<td>Jimmys the contents of accumulator 2 and converts the contents of main to 5;Letter e converts to 51,Zeta
+</td></tr>
+<tr>
+<td><code>y.</code>
+</td>
+<td>Converts letter z to .
+</td></tr>
+<tr>
+<td><code>*v</code>
+</td>
+<td>Generates random base52 string and converts 5 to a letter v and converts 2 to a number 47.
+</td></tr></tbody></table>
+<h3><span class="mw-headline" id="Conversion">Conversion</span></h3>
+<p>Melanocetus%21johnsonii permits the output of some basic punctuation and spacing. This is accomplished by three commands, <code>#!</code>, <code>jJ</code> and <code>y.</code>, providing an abstract cell coordinate oriented mode switch. The following relationship between intervals and letters holds:
+</p>
+<table class="wikitable">
+
+<tbody><tr>
+<td><strong>Interval</strong>
+</td>
+<td>[0, 1]
+</td>
+<td>[1, 0]
+</td>
+<td>[2, 3]
+</td>
+<td>[3, 4]
+</td>
+<td>[4, 5]
+</td>
+<td>[5, 6]
+</td>
+<td>[6, 7]
+</td>
+<td>[7, 8]
+</td>
+<td>[8, 9]
+</td>
+<td>[9, 10]
+</td>
+<td>[10, 11]
+</td>
+<td>[11, 12]
+</td>
+<td>[12, 13]
+</td>
+<td>[13, 14]
+</td>
+<td>[14, 15]
+</td>
+<td>[15, 16]
+</td>
+<td>[16, 17]
+</td>
+<td>[17, 18]
+</td>
+<td>[18, 19]
+</td>
+<td>[19, 20]
+</td>
+<td>[20, 21]
+</td>
+<td>[21, 22]
+</td>
+<td>[22, 23]
+</td>
+<td>[23, 24]
+</td>
+<td>[24, 25]
+</td>
+<td>[25, 26]
+</td></tr>
+<tr>
+<td><strong>Letter</strong>
+</td>
+<td>A
+</td>
+<td>B
+</td>
+<td>C
+</td>
+<td>D
+</td>
+<td>E
+</td>
+<td>F
+</td>
+<td>G
+</td>
+<td>H
+</td>
+<td>I
+</td>
+<td>J
+</td>
+<td>K
+</td>
+<td>L
+</td>
+<td>M
+</td>
+<td>N
+</td>
+<td>O
+</td>
+<td>P
+</td>
+<td>Q
+</td>
+<td>R
+</td>
+<td>S
+</td>
+<td>T
+</td>
+<td>U
+</td>
+<td>V
+</td>
+<td>W
+</td>
+<td>X
+</td>
+<td>Y
+</td>
+<td>Z
+</td></tr></tbody></table>
+<h4><span class="mw-headline" id="a_through_z">a through z</span></h4>
+<table class="wikitable">
+
+<tbody><tr>
+<td><strong>Interval</strong>
+</td>
+<td>[26, 27
+</td>
+<td>[27, 28]
+</td>
+<td>[28, 29]
+</td>
+<td>[29, 30]
+</td>
+<td>[30, 31]
+</td>
+<td>[31, 32]
+</td>
+<td>[32, 33]
+</td>
+<td>[33, 34]
+</td>
+<td>[34, 35]
+</td>
+<td>[35, 36]
+</td>
+<td>[36, 37]
+</td>
+<td>[37, 38]
+</td>
+<td>[38, 39]
+</td>
+<td>[39, 40]
+</td>
+<td>[40, 41]
+</td>
+<td>[41, 42]
+</td>
+<td>[42, 43]
+</td>
+<td>[43, 44]
+</td>
+<td>[44, 45]
+</td>
+<td>[45, 46]
+</td>
+<td>[46, 47]
+</td>
+<td>[47, 48]
+</td>
+<td>[48, 49]
+</td>
+<td>[49, 50]
+</td>
+<td>[50, 51]
+</td>
+<td>[51, 19683]
+</td></tr>
+<tr>
+<td><strong>Letter</strong>
+</td>
+<td>a
+</td>
+<td>b
+</td>
+<td>c
+</td>
+<td>d
+</td>
+<td>e
+</td>
+<td>f
+</td>
+<td>g
+</td>
+<td>h
+</td>
+<td>i
+</td>
+<td>j
+</td>
+<td>k
+</td>
+<td>l
+</td>
+<td>m
+</td>
+<td>n
+</td>
+<td>o
+</td>
+<td>p
+</td>
+<td>q
+</td>
+<td>r
+</td>
+<td>s
+</td>
+<td>t
+</td>
+<td>u
+</td>
+<td>v
+</td>
+<td>w
+</td>
+<td>x
+</td>
+<td>y
+</td>
+<td>z
+</td></tr>
+<tr>
+<td><strong>Zeta(f)</strong>
+</td>
+<td>19683
+</td>
+<td>_
+</td></tr></tbody></table>
+<p>There is a zeta function; conversion to higher orders yields a heptavintimal logic which elder viperfish often use to communicate to familiar creatures within their environment.
+</p>
+<h1><span class="mw-headline" id="examples">examples</span></h1>
+<h2><span class="mw-headline" id="XKCD_Random_Number">XKCD Random Number</span></h2>
+<p>There are <strike>two</strike> three known tongues of Melanocetus lang and most viperfish can easily do the xkcd: Random Number challenge.
+</p>
+<ul><li>BESPOKE <b>Viperfish</b>: <code>PLEASE MILZ DO XKCD RNG</code></li></ul>
+<p>| There is a demo at <a rel="nofollow" class="external text" href="https://iannmiui-png.github.io/Melanocetus.johnsonii_lang/#xkcd-random-number">xkcd: Random Number (Melanocetus.johnsonii_lang Github)</a><br>
+|  (note: Though in Melanocetus!johnsonii universe %21 the Viperfish tounge is known as the <b>BESPOKE</b> dialect, it is actually a reference to <a href="/wiki/INTERCAL" title="INTERCAL">INTERCAL</a> and not a <a href="/wiki/Bespoke" title="Bespoke">Bespoke</a> reference)
+</p>
+<ul><li>common <b>Humpback</b>: <code>*vnoMiiii</code></li></ul>
+<p>| Generally *vnoM (or simply *vM for single statements) is enough to translate between the bespoke and common tongues but in typed/interpreted Humpback <i>*vnoMiiii</i> is the standard xkcd: Random Number phrase. (Any random sound is sufficient for primitive johnsonii language.)<br>
+</p>
+<h2><span class="mw-headline" id="canous_interpeter">canous interpeter</span></h2>
+<p>There is also a canonical johnsonii language which is itself a variant of <b>BESPOKE</b> (Viperfish), but it is local and is sometimes expressed via bioluminescence. An advanced mode of heptavintimal logic has precipitated among <b>Viperfish language users</b> wherein natural sounds produced above the standard interval registers become interpreted. As the use of this language becomes more advanced gradually a new language will exist called <a href="/w/index.php?title=Canonical_Viperfish&amp;action=edit&amp;redlink=1" class="new" title="Canonical Viperfish (page does not exist)">Canonical Viperfish</a>.
+Thus the canous interpreter is a modal primitive of the canonical successor as well as an interpreter of the more primitive <b>Melanocetus!johnsonii</b>.
+</p>
+<pre>import sys
+import random
+from typing import Optional
+
+UPPER_INTERVALS = [
+    (0, 1, 'A'), (1, 2, 'B'), (2, 3, 'C'), (3, 4, 'D'),
+    (4, 5, 'E'), (5, 6, 'F'), (6, 7, 'G'), (7, 8, 'H'),
+    (8, 9, 'I'), (9, 10, 'J'), (10, 11, 'K'), (11, 12, 'L'),
+    (12, 13, 'M'), (13, 14, 'N'), (14, 15, 'O'), (15, 16, 'P'),
+    (16, 17, 'Q'), (17, 18, 'R'), (18, 19, 'S'), (19, 20, 'T'),
+    (20, 21, 'U'), (21, 22, 'V'), (22, 23, 'W'), (23, 24, 'X'),
+    (24, 25, 'Y'), (25, 26, 'Z'),
+]
+LOWER_INTERVALS = [
+    (26, 27, 'a'), (27, 28, 'b'), (28, 29, 'c'), (29, 30, 'd'),
+    (30, 31, 'e'), (31, 32, 'f'), (32, 33, 'g'), (33, 34, 'h'),
+    (34, 35, 'i'), (35, 36, 'j'), (36, 37, 'k'), (37, 38, 'l'),
+    (38, 39, 'm'), (39, 40, 'n'), (40, 41, 'o'), (41, 42, 'p'),
+    (42, 43, 'q'), (43, 44, 'r'), (44, 45, 's'), (45, 46, 't'),
+    (46, 47, 'u'), (47, 48, 'v'), (48, 49, 'w'), (49, 50, 'x'),
+    (50, 51, 'y'),
+]
+
+INTERVALS = UPPER_INTERVALS + LOWER_INTERVALS
+
+ZETA_CEILING = 19683
+
+def to_hept(n: int) -&gt; str:
+    n = abs(n)&nbsp;% ZETA_CEILING
+    if n == 0:
+        return "_"
+    digits = []
+    while n &gt; 0:
+        n, r = divmod(n, 27)
+        digits.append("_" if r == 0 else num_to_char(r - 1))
+    return "".join(reversed(digits))
+
+def canous_resolve(n: float) -&gt; str:
+    return to_hept(int(n))
+
+
+def num_to_char(n: float) -&gt; Optional[str]:
+    for lo, hi, ch in INTERVALS:
+        if lo &lt;= n &lt; hi:
+            return ch
+    return None
+
+def zeta_f(n: float) -&gt; str:
+    if n &gt;= ZETA_CEILING:
+        return "_"
+    if 51 &lt;= n &lt; 52:
+        return "Z"
+    if n &gt; 51:
+        return canous_resolve(n)
+    return "_"
+
+# ---------------------------------------------------------------
+# Machine
+# ---------------------------------------------------------------
+
+class MilzMachine:
+    def __init__(self):
+        self.A0 = 0.0
+        self.A1 = 0.0
+        self.A2 = 0.0
+        self.output = []
+
+    def cmd_M(self):
+        ch = num_to_char(self.A0)
+        if ch is None:
+            ch = zeta_f(self.A0)
+        self.output.append(ch)
+
+    def cmd_no(self):
+        self.A1 = self.A0
+
+    def cmd_ii(self):
+        self.A1 = self.A1 * self.A1
+
+    def cmd_hash_bang(self):
+        self.output.append(" ")
+        self.A0 = self.A1
+        self.A1 = 2.0
+        self.cmd_M()
+
+    def cmd_jJ(self):
+        self.A2 = self.A2 * 3.14159 + 1.0
+        self.A0 = 5.0
+        if self.output and self.output[-1] == 'e':
+            self.output[-1] = zeta_f(51.0)
+
+    def cmd_y_dot(self):
+        if self.output and self.output[-1] == 'z':
+            self.output[-1] = "."
+
+    def cmd_star_v(self):
+        self.A0 = float(random.randint(0, 51))
+        if self.A0 == 5:
+            self.A0 = 47.5
+        if self.A0 == 2:
+            self.A0 = 47.0
+
+    def run_tokens(self, tokens):
+        for tok in tokens:
+            if tok == 'M':
+                self.cmd_M()
+            elif tok == 'no':
+                self.cmd_no()
+            elif tok == 'ii':
+                self.cmd_ii()
+            elif tok == '#!':
+                self.cmd_hash_bang()
+            elif tok == 'jJ':
+                self.cmd_jJ()
+            elif tok == 'y.':
+                self.cmd_y_dot()
+            elif tok == '*v':
+                self.cmd_star_v()
+
+    def get_output(self):
+        return "".join(self.output)
+
+# ---------------------------------------------------------------
+# Front end
+# ---------------------------------------------------------------
+
+TOKEN_SPECS = ["*v", "jJ", "y.", "#!", "no", "ii", "M"]
+
+def tokenize(program):
+    tokens = []
+    i = 0
+    while i &lt; len(program):
+        matched = False
+        for spec in TOKEN_SPECS:
+            if program.startswith(spec, i):
+                tokens.append(spec)
+                i += len(spec)
+                matched = True
+                break
+        if not matched:
+            i += 1
+    return tokens
+
+def strip_bespoke_prefix(src):
+    prefix = "PLEASE MILZ DO"
+    idx = src.find(prefix)
+    if idx == -1:
+        return src
+    return src[idx + len(prefix):].lstrip()
+
+def run_milz_source(src):
+    core = strip_bespoke_prefix(src)
+    tokens = tokenize(core)
+    vm = MilzMachine()
+    vm.run_tokens(tokens)
+    return vm.get_output()
+
+def main():
+    if len(sys.argv) &lt; 2:
+        print("Usage: python milz.py \"PLEASE MILZ DO *vnoMiiii\"")
+        return
+    src = " ".join(sys.argv[1:])
+    print(run_milz_source(src))
+
+if __name__ == "__main__":
+    main()
+</pre>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<p><a href="/wiki/Deadshark" title="Deadshark">Deadshark</a>
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20260807140439
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.021 seconds
+Real time usage: 0.066 seconds
+Preprocessor visited node count: 33/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 4469/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key esolang_wiki:pcache:idhash:25805-0!canonical and timestamp 20260807140439 and revision id 185580. Rendering was triggered because: page-view
+ -->
+</div>
+<div class="printfooter" data-nosnippet="">Retrieved from "<a dir="ltr" href="https://esolangs.org/w/index.php?title=Melanocetus!johnsonii&amp;oldid=185580">https://esolangs.org/w/index.php?title=Melanocetus!johnsonii&amp;oldid=185580</a>"</div></div>
+		<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/wiki/Category:Thematic" title="Category:Thematic">Thematic</a></li><li><a href="/wiki/Category:Languages" title="Category:Languages">Languages</a></li><li><a href="/wiki/Category:Output_only" title="Category:Output only">Output only</a></li><li><a href="/wiki/Category:Deadfish_derivatives" title="Category:Deadfish derivatives">Deadfish derivatives</a></li><li><a href="/wiki/Category:2026" title="Category:2026">2026</a></li></ul></div></div>
+	</div>
+</div>
+
+<div id="mw-navigation">
+	<h2>Navigation menu</h2>
+	<div id="mw-head">
+		
+<nav id="p-personal" class="mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu" aria-labelledby="p-personal-label">
+	<h3 id="p-personal-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">Personal tools</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="pt-createaccount" class="mw-list-item"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Melanocetus%21johnsonii" title="You are encouraged to create an account and log in; however, it is not mandatory"><span>Create account</span></a></li><li id="pt-login" class="mw-list-item"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Melanocetus%21johnsonii" title="You are encouraged to log in; however, it is not mandatory [alt-shift-o]" accesskey="o"><span>Log in</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+		<div id="left-navigation">
+			
+<nav id="p-namespaces" class="mw-portlet mw-portlet-namespaces vector-menu-tabs vector-menu-tabs-legacy vector-menu" aria-labelledby="p-namespaces-label">
+	<h3 id="p-namespaces-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">Namespaces</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="ca-nstab-main" class="selected mw-list-item"><a href="/wiki/Melanocetus!johnsonii" title="View the content page [alt-shift-c]" accesskey="c"><span>Page</span></a></li><li id="ca-talk" class="new mw-list-item"><a href="/w/index.php?title=Talk:Melanocetus!johnsonii&amp;action=edit&amp;redlink=1" rel="discussion" class="new" title="Discussion about the content page (page does not exist) [alt-shift-t]" accesskey="t"><span>Discussion</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<nav id="p-variants" class="mw-portlet mw-portlet-variants emptyPortlet vector-menu-dropdown vector-menu" aria-labelledby="p-variants-label">
+	<input type="checkbox" id="p-variants-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-variants" class="vector-menu-checkbox" aria-labelledby="p-variants-label">
+	<label id="p-variants-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">English</span>
+	</label>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			
+		</ul>
+		
+	</div>
+</nav>
+
+		</div>
+		<div id="right-navigation">
+			
+<nav id="p-views" class="mw-portlet mw-portlet-views vector-menu-tabs vector-menu-tabs-legacy vector-menu" aria-labelledby="p-views-label">
+	<h3 id="p-views-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">Views</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="ca-view" class="selected mw-list-item collapsible"><a href="/wiki/Melanocetus!johnsonii"><span>Read</span></a></li><li id="ca-viewsource" class="mw-list-item collapsible"><a href="/w/index.php?title=Melanocetus!johnsonii&amp;action=edit" title="This page is protected.
+You can view its source [alt-shift-e]" accesskey="e"><span>View source</span></a></li><li id="ca-history" class="mw-list-item collapsible"><a href="/w/index.php?title=Melanocetus!johnsonii&amp;action=history" title="Past revisions of this page [alt-shift-h]" accesskey="h"><span>View history</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<nav id="p-cactions" class="mw-portlet mw-portlet-cactions emptyPortlet vector-menu-dropdown vector-menu" aria-labelledby="p-cactions-label" title="More options">
+	<input type="checkbox" id="p-cactions-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-cactions" class="vector-menu-checkbox" aria-labelledby="p-cactions-label">
+	<label id="p-cactions-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">More</span>
+	</label>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<div id="p-search" role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
+	<h3>Search</h3>
+	<form action="/w/index.php" id="searchform" class="vector-search-box-form">
+		<div id="simpleSearch" class="vector-search-box-inner" data-search-loc="header-navigation">
+			<input class="vector-search-box-input" type="search" name="search" placeholder="Search Esolang" aria-label="Search Esolang" autocapitalize="sentences" title="Search Esolang [alt-shift-f]" accesskey="f" id="searchInput">
+			<input type="hidden" name="title" value="Special:Search">
+			<input id="mw-searchButton" class="searchButton mw-fallbackSearchButton" type="submit" name="fulltext" title="Search the pages for this text" value="Search">
+			<input id="searchButton" class="searchButton" type="submit" name="go" title="Go to a page with this exact name if it exists" value="Go">
+		</div>
+	</form>
+</div>
+
+		</div>
+	</div>
+	
+<div id="mw-panel" class="vector-legacy-sidebar">
+	<div id="p-logo" role="banner">
+		<a class="mw-wiki-logo" href="/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	
+<nav id="p-navigation" class="mw-portlet mw-portlet-navigation vector-menu-portal portal vector-menu" aria-labelledby="p-navigation-label">
+	<h3 id="p-navigation-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">Navigation</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="n-mainpage-description" class="mw-list-item"><a href="/wiki/Main_Page" title="Visit the main page [alt-shift-z]" accesskey="z"><span>Main page</span></a></li><li id="n-portal" class="mw-list-item"><a href="/wiki/Esolang:Community_portal" title="About the project, what you can do, where to find things"><span>Community portal</span></a></li><li id="n-Language-list" class="mw-list-item"><a href="/wiki/Language_list"><span>Language list</span></a></li><li id="n-Browse-by-category" class="mw-list-item"><a href="/wiki/Esolang:Categorization"><span>Browse by category</span></a></li><li id="n-recentchanges" class="mw-list-item"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [alt-shift-r]" accesskey="r"><span>Recent changes</span></a></li><li id="n-randompage" class="mw-list-item"><a href="/wiki/Special:Random" title="Load a random page [alt-shift-x]" accesskey="x"><span>Random page</span></a></li><li id="n-help" class="mw-list-item"><a href="/wiki/Esolang:Help" title="The place to find out"><span>Help</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+	
+<nav id="p-tb" class="mw-portlet mw-portlet-tb vector-menu-portal portal vector-menu" aria-labelledby="p-tb-label">
+	<h3 id="p-tb-label" class="vector-menu-heading ">
+		<span class="vector-menu-heading-label">Tools</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="t-whatlinkshere" class="mw-list-item"><a href="/wiki/Special:WhatLinksHere/Melanocetus!johnsonii" title="A list of all wiki pages that link here [alt-shift-j]" accesskey="j"><span>What links here</span></a></li><li id="t-recentchangeslinked" class="mw-list-item"><a href="/wiki/Special:RecentChangesLinked/Melanocetus!johnsonii" rel="nofollow" title="Recent changes in pages linked from this page [alt-shift-k]" accesskey="k"><span>Related changes</span></a></li><li id="t-specialpages" class="mw-list-item"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [alt-shift-q]" accesskey="q"><span>Special pages</span></a></li><li id="t-print" class="mw-list-item"><a href="javascript:print();" rel="alternate" title="Printable version of this page [alt-shift-p]" accesskey="p"><span>Printable version</span></a></li><li id="t-permalink" class="mw-list-item"><a href="https://esolangs.org/w/index.php?title=Melanocetus!johnsonii&amp;oldid=185580" title="Permanent link to this revision of this page"><span>Permanent link</span></a></li><li id="t-info" class="mw-list-item"><a href="/w/index.php?title=Melanocetus!johnsonii&amp;action=info" title="More information about this page"><span>Page information</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+	
+</div>
+
+</div>
+
+<footer id="footer" class="mw-footer">
+	<ul id="footer-info">
+	<li id="footer-info-lastmod"> This page was last edited on 14 July 2026, at 18:08.</li>
+	<li id="footer-info-copyright">Content is available under <a href="/wiki/Esolang:Copyrights" title="Esolang:Copyrights">CC0 public domain dedication</a>.</li>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-about"><a href="/wiki/Esolang:About">About Esolang</a></li>
+	<li id="footer-places-disclaimers"><a href="/wiki/Esolang:General_disclaimer">Disclaimers</a></li>
+</ul>
+
+	<ul id="footer-icons" class="noprint">
+	<li id="footer-copyrightico"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAMAAABUFvrSAAAA8FBMVEX///8AAAD///+/v7+Pj4/f399/f3/v7+8/Pz/Pz88fHx8vLy+fn58PDw9vb29PT0+vr69fX1/q6ur9/f35+fne3t7l5eXNzc3Z2dnz8/OEhIT+/v7k5OSOjo739/fx8fExMTH7+/tlZWXd3d3q6efFxcWLi4vS0tLm5ub09PRBQUHi4uLV1dXs7Oy+vr4sLCzLy8vq6ueenp7Ozs74+Pjy8vJ6enr19fX5+Pa6uroKCwnT09OXl5e3t7fW1tbh4eGNjY329vZTU1MZGRlNTU1tbW2Kior6+ffn5+f29fPt6uHp6Og+Pj6QkJDKysro5+VXpngfAAAAAXRSTlMAQObYZgAAAodJREFUeF611oWO4zAQBuD9Z4wQKi3TMTMzM7z/25xnrWa10qU69dpfSivL7aeJNXaysYG1JLvf1hJsgNaSs7DmHLtqWNcBEgRjx5Prt/F/6WGD01T7b0fTZiWwjQCa5Il8cgA+vN67HFcAixuzWsIyOpw+fQaJM8Z0CCbIFfKgDuiMAMYBXUpuAdwBnZCeWXjbAB9Hz3cgMcSajCOHfDnynhhMApCBIm2pGYRboBHPCeSkLSLwcm8zFhiw3MMO3vZwIEbFahAOqIomgcuwrvDjcPqowCZR6uGc1MOO6kVr7IEkvwdQC86lSbZGFwvMnKoerl1L8RRWQBqsuAak4EYQJ7qUDOxvT48EFgSRWESBWWBjTIahbVNTGoKllpwK0AygjCK6g9m5OVzuSZUpBZYvgaMm8tUQHGGEApA5B0SBG7jJlwz3qdxfgRiH1xg9nBDEF9gUeOmcrTigZcCdqbhjZlMBDXMbEZmBmhUQ5CNyF9kgcly4xmLy6RoX2BB78nCklbXBEXXwxICSfzjpDIqO3OKugKaudIUF9g9m865oKbaZaYShNpDAWlONAvsB2ANq3sfZhS99fH57igJn0TEDEMaTIc9oqNO+wIpacv++89zk5s4cVhme33hN1DIjkbcUBJa5AZiLVs6KxpbT7taDK0f9ltboyBuRyGnqmKs8VKQKHOwATF3xyDNrKm59fPgCkqxwCoDR5BtEjjVXSjl2QJukKzii5jh8HgemEmpD5saPb7xfxRPEAYiKrWUVpMzdyejaip55FfpU7e7xw3dYDUzWhAJEZWl8sHXv56VPS+dNgXu7f68YX5292rzza+ncz/Dx57/kyVd79/vv5XMBa3x3W1P+ACZfkvIkiCc5AAAAAElFTkSuQmCC" alt="CC0 public domain dedication" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA4OSAzMSI+Cgk8cGF0aCBmaWxsPSIjMDAwIiBkPSJtNDEuOTE2IDI0LjQxLS4wMS04LjE0NmgtMS4xMjNsLTIuODY1IDUuMzk0LTIuOTE3LTUuMzk0aC0xLjEyNXY4LjE0NmgxLjN2LTUuMzNsMi40MTQgNC4zOTloLjYxMWwyLjQxNS00LjQ3LjAxIDUuMzk1aDEuMjl6bTYuOTE5LTMuMDcyYTMuNyAzLjcgMCAwIDAtLjM2My0xLjY4MkEyLjY4IDIuNjggMCAwIDAgNDYgMTguMTI0YTIuNzYgMi43NiAwIDAgMC0yLjUyNSAxLjU0MyAzLjUgMy41IDAgMCAwLS4zNzIgMS42MzRjLS4wMS41Ny4xMjMgMS4xMy4zODMgMS42NDIuMjQ1LjQ3NS42MjIuODY5IDEuMDg2IDEuMTM1YTMuNDMgMy40MyAwIDAgMCAyLjkzMi4xNTEgMi40IDIuNCAwIDAgMCAuOTU1LS43NTZsLS43MDMtLjg5NmExLjk0IDEuOTQgMCAwIDEtMS41MjQuNjc1IDEuODQgMS44NCAwIDAgMS0xLjIxMy0uNCAxLjcyIDEuNzIgMCAwIDEtLjYwNC0xLjA4OWg0LjM5N3EuMDIxLS4yOC4wMjEtLjQzem0tMi44MzYtMi4wNDlhMS40OCAxLjQ4IDAgMCAxIDEuMDcuNDE5Yy4yOTUuMjk0LjQ3Ny42OC41MTYgMS4wOTRoLTMuMTgyYy4wNDMtLjQxNy4yMzEtLjgwNi41My0xLjFBMS41IDEuNSAwIDAgMSA0NiAxOS4yODltOC4wNjEtMy41MTh2My4xODlhMi4xIDIuMSAwIDAgMC0uNzg3LS42MyAyLjQgMi40IDAgMCAwLTEuMDE4LS4yMDkgMi42OSAyLjY5IDAgMCAwLTIuNDYzIDEuNTEzIDMuOTcgMy45NyAwIDAgMCAwIDMuMzM0IDIuNjggMi42OCAwIDAgMCAyLjQ2MyAxLjUyNGMuMzY0LjAwNC43MjQtLjA3MSAxLjA1Ni0uMjIxYTIuMDYgMi4wNiAwIDAgMCAuODAzLS42NjR2LjgwM2gxLjI2di04LjYzaC0xLjMxOXptLTEuNjQ2IDcuNDc1Yy0uMy4wMDUtLjU5NS0uMDc3LS44NS0uMjM1YTEuNjUgMS42NSAwIDAgMS0uNTk5LS42ODEgMi41IDIuNSAwIDAgMSAwLTIuMDQ5Yy4xMzItLjI3OC4zNC0uNTE0LjU5OC0uNjgxYTEuNjMgMS42MyAwIDAgMSAxLjcgMGMuMjYuMTY3LjQ2Ny40MDMuNTk5LjY4MWEyLjUgMi41IDAgMCAxIDAgMi4wNDkgMS42NiAxLjY2IDAgMCAxLS41OTguNjgxIDEuNTYgMS41NiAwIDAgMS0uODUuMjM1bTQuNDcxIDEuMTYzaDEuMzF2LTYuMjE1aC0xLjMxMXptNC45NjMtNi4yODRhNC4zIDQuMyAwIDAgMC0xLjMxMy4xOTggMy4xIDMuMSAwIDAgMC0xLjA1NS41N2wuNTE1IDEuMDU1YTIuMiAyLjIgMCAwIDEgLjc3Mi0uNDU0Yy4yOTctLjEwOC42MTEtLjE2My45MjgtLjE2M2ExLjQyIDEuNDIgMCAwIDEgMS4wNDUuMzUyIDEuMzUgMS4zNSAwIDAgMSAuMzUyIDEuMDAxdi4wOTNoLTEuNDU0YTIuNiAyLjYgMCAwIDAtMS43NjkuNTA3IDEuNzIgMS43MiAwIDAgMC0uNTYxIDEuMzQ0IDEuNzYgMS43NiAwIDAgMCAuOTg2IDEuNjI0Yy4zNDQuMTY0LjcyMi4yNDQgMS4xMDIuMjM0LjM3LjAxLjczOC0uMDY0IDEuMDc1LS4yMTZhMS41NyAxLjU3IDAgMCAwIC42ODgtLjYyMnYuNzYyaDEuMjR2LTMuNjQ0YTIuNyAyLjcgMCAwIDAtLjY1Ni0xLjk4NCAyLjU1IDIuNTUgMCAwIDAtMS44OTUtLjY1OG0tLjE3OSA1LjMwN2ExLjIgMS4yIDAgMCAxLS43ODYtLjIzNC43Ny43NyAwIDAgMS0uMjg0LS42M3EwLS44MiAxLjEzNC0uODJoMS4zNTJ2LjcxNWExLjMzIDEuMzMgMCAwIDEtLjU0LjcxNiAxLjU3IDEuNTcgMCAwIDEtLjg3Ny4yNXptMTMuNzYtNy4xNy0xLjg3NiA2LjIyNy0xLjg1Ny02LjIyN2gtMS4yNjJsLTEuOSA2LjE5Mi0xLjgyNi02LjE5MmgtMS40MTdsMi40MzUgOC4xNDdoMS40NTdsMS44NDctNi4wMjkgMS44MTYgNi4wMjloMS40NWwyLjQzNS04LjE0N3ptMi4xMzEgOC4xNDdoMS4zMTJ2LTYuMjE1SDc3LjU2em03LjA1NCAwaDEuNTk1TDgzLjY0NyAyMC44bDIuMzQ2LTIuNjA3aC0xLjU3OWwtMi43MiAyLjc5NFYxNS43OGgtMS4zMXY4LjYzMWgxLjMxdi0xLjY0MmwuOTc3LTEuMDI0em0yLjE4MyAwaDEuMzEydi02LjIxNWgtMS4zMTN2Ni4yMTV6bS0yOS4yNTItNy4wMzZhLjgyLjgyIDAgMCAwIC42MDQtLjIzNS44LjggMCAwIDAgLjIzNS0uNTg2LjcuNyAwIDAgMC0uMjQyLS41NDUuODYuODYgMCAwIDAtLjU5OC0uMjE3Ljg0Ljg0IDAgMCAwLS41OTguMjI3Ljc4Ljc4IDAgMCAwLS4xNzguODc0LjguOCAwIDAgMCAuMTc4LjI1OC44NC44NCAwIDAgMCAuNTk4LjIyN3ptMjAuNjc2IDBhLjgyLjgyIDAgMCAwIC42MDQtLjIzNS44LjggMCAwIDAgLjIzNS0uNTg2LjcuNyAwIDAgMC0uMjQyLS41NDUuODYuODYgMCAwIDAtLjU5OC0uMjE3Ljg0Ljg0IDAgMCAwLS41OTguMjI3Ljc4Ljc4IDAgMCAwIDAgMS4xMzIuODQuODQgMCAwIDAgLjU5OC4yMjd6bTkuMjM2IDBhLjgyLjgyIDAgMCAwIC42MDQtLjIzNS44LjggMCAwIDAgLjIzNC0uNTg2LjcuNyAwIDAgMC0uMjQxLS41NDUuODYuODYgMCAwIDAtLjU5OC0uMjE3Ljg0Ljg0IDAgMCAwLS41OTguMjI3Ljc4Ljc4IDAgMCAwIDAgMS4xMzIuODQuODQgMCAwIDAgLjU5OC4yMjd6TTM2LjEzNiA5LjkxNmMuNDE2LjAwNy44My0uMDUzIDEuMjI3LS4xNzdhMi41IDIuNSAwIDAgMCAuODg5LS40OTggMi4xNCAyLjE0IDAgMCAwIC41NDQtLjc2MiAyLjUgMi41IDAgMCAwIC4xODQtLjk3NCAyLjYgMi42IDAgMCAwLS4xNy0uOTY4IDEuOSAxLjkgMCAwIDAtLjUyNS0uNzQ1IDIuNCAyLjQgMCAwIDAtLjg4Ni0uNDc3IDQuMiA0LjIgMCAwIDAtMS4yNTgtLjE3aC0yLjI3OXY3LjU3NGgxLjA4N1Y5LjkxNnptLTEuMTg3LTMuOTE0aDEuMTg4Yy4yNjEtLjAwNS41MjIuMDMuNzczLjEwMy4yMDIuMDU5LjM4OS4xNi41NDkuMjk4LjE0NS4xMjguMjU3LjI4OS4zMjcuNDY5LjA3NS4yMDIuMTEyLjQxNi4xMDguNjMuMDAxLjIxNi0uMDM5LjQyOS0uMTE3LjYzYTEuMyAxLjMgMCAwIDEtLjMzNi40ODdjLS4xNi4xNDItLjM0OC4yNS0uNTUxLjMxNy0uMjQ0LjA4LS41LjEyLS43NTcuMTE3aC0xLjE4NHptNS45OTMgMS40N2MtLjMwOC4xMi0uNTg2LjMxLS44MTMuNTUtLjIzLjI1LS40MDYuNTQ2LS41MTUuODY4YTMuNzQgMy43NCAwIDAgMCAwIDIuMjg4Yy4xMS4zMjMuMjg0LjYxOS41MTUuODcuMjI3LjI0Mi41MDQuNDMuODEzLjU1MWEzLjA1IDMuMDUgMCAwIDAgMi4xMzQgMGMuMzA2LS4xMjIuNTgyLS4zMS44MDctLjU1YTIuNSAyLjUgMCAwIDAgLjUxMi0uODcxIDMuNzQgMy43NCAwIDAgMCAwLTIuMjg4IDIuNSAyLjUgMCAwIDAtLjUxMi0uODY4IDIuMiAyLjIgMCAwIDAtLjgwNy0uNTUgMy4wNSAzLjA1IDAgMCAwLTIuMTM0IDBtLS4wOTUgNC4wMjNhMi40IDIuNCAwIDAgMS0uMzgzLTEuNDU3IDIuNDMgMi40MyAwIDAgMSAuMzgzLTEuNDU2IDEuMzUgMS4zNSAwIDAgMSAxLjE2My0uNTIyIDEuMzMgMS4zMyAwIDAgMSAxLjE1LjUyMmMuMjc3LjQzMy40MS45NDMuMzggMS40NTZhMi40MyAyLjQzIDAgMCAxLS4zOCAxLjQ1NyAxLjM0IDEuMzQgMCAwIDEtMS4xNS41MTcgMS4zNSAxLjM1IDAgMCAxLTEuMTYzLS41MTdtNS45NjUgMS4yMjRoLjc1NWEuMjM1LjIzNSAwIDAgMCAuMjI4LS4xOWwxLjE2NS0zLjUzMXEuMDQxLS4xMjUuMDY4LS4yNTRsLjA1My0uMjU2cS4wMjcuMTI3LjA1OS4yNTNjLjAzMi4xMjYuMDQ1LjE2OC4wNzIuMjUybDEuMTQ2IDMuNTM2YS4yMS4yMSAwIDAgMCAuMi4xOWguNzkybDEuNzMxLTUuMzU2aC0uNzU1YS4zLjMgMCAwIDAtLjI5LjJsLTEuMDAzIDMuMzRhOSA5IDAgMCAwLS4xNjQuNzU2IDEzIDEzIDAgMCAwLS4xOTYtLjc1NEw0OS42IDcuNTQzYS4yNy4yNyAwIDAgMC0uMS0uMTQuMy4zIDAgMCAwLS4xODMtLjA1NWgtLjQzYS4yNzUuMjc1IDAgMCAwLS4yNzUuMTk1bC0xLjA4NyAzLjM2LS4xMTIuMzg2cS0uMDUyLjE4NS0uMS4zN2ExMyAxMyAwIDAgMC0uMTUzLS43NTRsLS45ODYtMy4zNDFhLjMuMyAwIDAgMC0uMTAzLS4xNDIuMzIuMzIgMCAwIDAtLjE5OS0uMDU5aC0uNzl6bTguMjQtNS4yMzVjLS4zLjEzLS41Ny4zMjEtLjc5MS41NjJhMi41IDIuNSAwIDAgMC0uNDk5Ljg0IDMgMyAwIDAgMC0uMTc0IDEuMDQyYy0uMDA4LjQxOS4wNTcuODM2LjE5MiAxLjIzMi4xMTQuMzMzLjI5Ny42NC41MzYuODk4LjIzLjI0LjUxLjQyOS44Mi41NDhhMi44IDIuOCAwIDAgMCAxLjAyNy4xODhxLjI5NCAwIC41ODYtLjA0Ny4yOTctLjA0Ni41NzgtLjE1YTIuNyAyLjcgMCAwIDAgLjUyMy0uMjU4cS4yNDMtLjE1NS40MjctLjM3OGwtLjI4NS0uMzYzYS4yLjIgMCAwIDAtLjE4NC0uMDk1LjQ0LjQ0IDAgMCAwLS4yMjIuMDggNSA1IDAgMCAxLS4zMDguMTc0cS0uMjEuMTA2LS40MzMuMTc1YTIgMiAwIDAgMS0uNTk5LjA3OSAxLjggMS44IDAgMCAxLS42Ny0uMTE4IDEuMyAxLjMgMCAwIDEtLjUxNi0uMzU4IDEuNyAxLjcgMCAwIDEtLjMzNy0uNjA0IDMgMyAwIDAgMS0uMTQtLjg1NWgzLjUzNmEuMi4yIDAgMCAwIC4xODctLjA3OS42NS42NSAwIDAgMCAuMDUtLjMxMiAyLjkgMi45IDAgMCAwLS4xNjgtMS4wMjEgMi4wNCAyLjA0IDAgMCAwLTEuMTgyLTEuMjIgMi41IDIuNSAwIDAgMC0uODk3LS4xNjIgMi42IDIuNiAwIDAgMC0xLjA1Ny4yMDJtMS42MzQuNjM2YTEuMjEgMS4yMSAwIDAgMSAuNjgxLjc1MXEuMDk0LjI4Ni4wOS41ODdoLTIuODQ2YTEuODIgMS44MiAwIDAgMSAuNDctMS4wNTYgMS41OCAxLjU4IDAgMCAxIDEuNjA1LS4yODJtMy43OTQgNC41OTlWOS4zNThxLjA5MS0uMjQzLjIyLS40Ny4xMS0uMTk1LjI3NC0uMzQ5LjE1Mi0uMTQxLjM0Ni0uMjE1Yy4xNDEtLjA1Mi4yOTEtLjA3Ny40NDEtLjA3NHEuMTYxLS4wMDEuMzE5LjAzMS4xMDguMDI3LjIyLjAzMmEuMTYuMTYgMCAwIDAgLjE2OC0uMTQybC4wNy0uNzVhLjguOCAwIDAgMC0uMjczLS4xMTYgMS40IDEuNCAwIDAgMC0uMzMtLjAzOCAxLjM1IDEuMzUgMCAwIDAtLjg4Ni4zMDYgMi40IDIuNCAwIDAgMC0uNjIyLjgzOWwtLjA2NC0uNzgxYS4zNi4zNiAwIDAgMC0uMDgyLS4yMTEuMzMuMzMgMCAwIDAtLjIyNC0uMDZoLS41NzR2NS4zNTloMS4wMDJ6bTMuNzk4LTUuMjM1Yy0uMy4xMy0uNTcuMzIxLS43OTIuNTYyYTIuNSAyLjUgMCAwIDAtLjQ5OC44NCAzIDMgMCAwIDAtLjE3NSAxLjA0MiAzLjYgMy42IDAgMCAwIC4xOTIgMS4yMzJjLjExNC4zMzMuMjk3LjY0LjUzNi44OTguMjMuMjQuNTEuNDI5LjgyMS41NDhhMi44IDIuOCAwIDAgMCAxLjAyNi4xODhxLjI5NCAwIC41ODYtLjA0Ny4yOTYtLjA0Ni41NzgtLjE1YTIuNyAyLjcgMCAwIDAgLjUyMy0uMjU4IDEuOSAxLjkgMCAwIDAgLjQyNy0uMzc4bC0uMjg1LS4zNjNhLjIuMiAwIDAgMC0uMTg0LS4wOTUuNDQuNDQgMCAwIDAtLjIyMS4wOCA1IDUgMCAwIDEtLjMwOS4xNzRxLS4yMS4xMDYtLjQzMi4xNzVhMiAyIDAgMCAxLS42LjA3OSAxLjggMS44IDAgMCAxLS42Ny0uMTE4IDEuMyAxLjMgMCAwIDEtLjUxNS0uMzU4IDEuNyAxLjcgMCAwIDEtLjMzOC0uNjA0IDMgMyAwIDAgMS0uMTQtLjg1NWgzLjUzNmEuMi4yIDAgMCAwIC4xODgtLjA3OWMuMDQtLjEuMDU2LS4yMDguMDQ0LS4zMTVhMi45IDIuOSAwIDAgMC0uMTY5LTEuMDIyIDIuMSAyLjEgMCAwIDAtLjQ2OS0uNzUxIDIgMiAwIDAgMC0uNzEzLS40NyAyLjUgMi41IDAgMCAwLS44OTctLjE2IDIuNiAyLjYgMCAwIDAtMS4wNTMuMjA1em0xLjYzMy42MzZhMS4yIDEuMiAwIDAgMSAuNjgxLjc1MXEuMDk0LjI4Ni4wOS41ODdoLTIuODQ3YTEuODIgMS44MiAwIDAgMSAuNDctMS4wNTYgMS41OCAxLjU4IDAgMCAxIDEuNjA0LS4yODJ6bTcuMjU5IDQuNTk5VjQuOTM2aC0xLjAwM1Y3Ljg4YTEuODMgMS44MyAwIDAgMC0xLjQ0Ni0uNjEyIDIuMSAyLjEgMCAwIDAtLjk2NS4yMTRjLS4yODIuMTQtLjUzLjM0LS43MjguNTg2YTIuNyAyLjcgMCAwIDAtLjQ1OS44ODQgMy43IDMuNyAwIDAgMC0uMTU4IDEuMTA2Yy0uMDA2LjM5Ni4wNDIuNzkuMTQyIDEuMTczLjA4LjMwOS4yMi42LjQxLjg1Ny4xNjYuMjI0LjM4NS40MDQuNjM3LjUyNS4yNi4xMjEuNTQ0LjE4MS44MzIuMTc3cS4yNy4wMDUuNTMyLS4wNi4yNDUtLjA2LjQ3LS4xODEuMjIyLS4xMi40MTUtLjI4NS4xOTgtLjE3LjM2NS0uMzcybC4wOS42MjlhLjI0Ni4yNDYgMCAwIDAgLjI2My4yaC42MDN6bS0yLjk2Ni0uODQyYTEgMSAwIDAgMS0uNDExLS4zNDQgMS43IDEuNyAwIDAgMS0uMjYtLjU5OSAzLjcgMy43IDAgMCAxLS4wODktLjg3NiAyLjQ2IDIuNDYgMCAwIDEgLjM5LTEuNDk5IDEuMyAxLjMgMCAwIDEgMS4xMTUtLjUyIDEuNiAxLjYgMCAwIDEgLjY2NS4xMzZjLjIyMi4xMDcuNDEzLjI2OC41NTQuNDY5djIuNTYyYTIuMiAyLjIgMCAwIDEtLjYyMi41NzggMS41IDEuNSAwIDAgMS0uNzg3LjIwMyAxLjM1IDEuMzUgMCAwIDEtLjU1NS0uMTFtNy43NDcuODQyYS4yMzQuMjM0IDAgMCAwIC4yNTMtLjIxMWwuMDQ4LS40NmMuMTcuMjIzLjM4MS40MS42MjUuNTQ3LjI3My4xNC41NzcuMjA5Ljg4NC4xOThhMi4wNiAyLjA2IDAgMCAwIDEuNjgyLS43OTVjLjIwOS0uMjczLjM2NS0uNTgyLjQ2LS45MTMuMTEtLjM4NC4xNjUtLjc4Mi4xNi0xLjE4MmE0IDQgMCAwIDAtLjE0LTEuMDk1IDIuNCAyLjQgMCAwIDAtLjQwMy0uODIgMS44IDEuOCAwIDAgMC0uNjQxLS41MiAxLjkgMS45IDAgMCAwLS44NDctLjE4MiAyIDIgMCAwIDAtLjk2OC4yMjcgMi43IDIuNyAwIDAgMC0uNzU4LjYxMnYtMy4xOWgtMS4wMDR2Ny43ODR6bTIuNzMtNC4xOTJjLjI2My40Mi4zODUuOTEzLjM0NyAxLjQwNy4wNC41NDktLjA5NyAxLjEtLjM5IDEuNTYyYTEuMzMgMS4zMyAwIDAgMS0xLjEyNS41MTcgMS42IDEuNiAwIDAgMS0uNjU1LS4xMzUgMS40NiAxLjQ2IDAgMCAxLS41NTQtLjQ2OVY4Ljg2MWEyLjMgMi4zIDAgMCAxIC42MTItLjU4N2MuMjM1LS4xMzkuNTA1LS4yMS43NzktLjIwMmExLjE3IDEuMTcgMCAwIDEgLjk4Ny40NTVtNy4wNzQtMS4xNjRoLS43OTZhLjMuMyAwIDAgMC0uMjkuMmwtMS4zNCAzLjI2MnEtLjA0OC4xMTctLjA5LjI0NWwtLjA3OS4yNDVhNCA0IDAgMCAwLS4xNDItLjQ4bC0xLjM4Ny0zLjI3MmEuMy4zIDAgMCAwLS4zMDEtLjJoLS44NzNsMi4yMDUgNS4wMjktLjk4MiAyLjEyNmguNzQ3YS4zNS4zNSAwIDAgMCAuMjI4LS4wNjEuNDQuNDQgMCAwIDAgLjExNy0uMTc3eiIvPgoJPHBhdGggZmlsbD0idXJsKCNwKSIgZD0iTTguMjg0IDYuMTE2QTQuNTUgNC41NSAwIDAgMCA5LjYxIDkuMjRhMy41IDMuNSAwIDAgMCAyLjMxNC45MjMgMS4wNyAxLjA3IDAgMCAwIC43MzYtLjMzIDMuNTEgMy41MSAwIDAgMCAuODIxLTMuMzczYy0uNjIzLTIuMTYtMi4zNS0zLjM1LTQuNDU3LTQuMzg0YTkuNCA5LjQgMCAwIDAtLjc0MSA0LjAzOHoiIG9wYWNpdHk9Ii42NSIvPgoJPHBhdGggZmlsbD0idXJsKCNpKSIgZD0iTTUuMTU1IDkuMjVhNC41IDQuNSAwIDAgMCAyLjQyMiAyLjM3NGMuODA2LjI5MyAxLjY5LjI4IDIuNDg4LS4wMzcuMjU0LS4xMTcuNDUyLS4zMjcuNTU1LS41ODZhMy41MSAzLjUxIDAgMCAwLS41Mi0zLjQzYy0xLjQxLTEuNzUtMy40NS0yLjE5LTUuNzk1LTIuMzM1YTkuNCA5LjQgMCAwIDAgLjg1IDQuMDEzIiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjaCkiIGQ9Ik0zLjQ2NSAxMy4zNDVhNC40OCA0LjQ4IDAgMCAwIDMuMTQzIDEuMjYyIDMuNSAzLjUgMCAwIDAgMi4yODYtLjk5IDEuMSAxLjEgMCAwIDAgLjI4OC0uNzU2QTMuNTIgMy41MiAwIDAgMCA3LjM5IDkuODljLTEuOTYtMS4wOC00LjAyLS43MDUtNi4yNDMuMDdhOS40IDkuNCAwIDAgMCAyLjMxOCAzLjM4NCIgb3BhY2l0eT0iLjY1Ii8+Cgk8cGF0aCBmaWxsPSJ1cmwoI2cpIiBkPSJNMy40NjIgMTcuNzgxYzEuMDkuNDI5IDIuMy40MTQgMy4zODMtLjA0MWEzLjUyIDMuNTIgMCAwIDAgMS43MzQtMS43OTMgMS4xIDEuMSAwIDAgMC0uMDItLjgxIDMuNDkgMy40OSAwIDAgMC0yLjc4Ni0yLjA1NGMtMi4yMzEtLjIzNi0zLjk4MS44OTctNS43NDcgMi40NjJhOS40IDkuNCAwIDAgMCAzLjQzNiAyLjIzNiIgb3BhY2l0eT0iLjY1Ii8+Cgk8cGF0aCBmaWxsPSJ1cmwoI2YpIiBkPSJNNS4xNDggMjEuODc3YTQuNSA0LjUgMCAwIDAgMy4xMS0xLjMzOCAzLjUzIDMuNTMgMCAwIDAgLjkyLTIuMzIzIDEuMSAxLjEgMCAwIDAtLjMyOC0uNzQgMy40OCAzLjQ4IDAgMCAwLTMuMzU3LS44MjhjLTIuMTUuNjMzLTMuMzQgMi4zNi00LjM2NSA0LjQ4NGE5LjMgOS4zIDAgMCAwIDQuMDIuNzQ1IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjZSkiIGQ9Ik04LjI2NyAyNS4wMTlhNC41IDQuNSAwIDAgMCAyLjM2NC0yLjQzOGMuMjkyLS44MS4yOC0xLjctLjAzNi0yLjVhMS4wOCAxLjA4IDAgMCAwLS41ODYtLjU1OCAzLjQ5IDMuNDkgMCAwIDAtMy40MTcuNTI2Yy0xLjc0IDEuNDEtMi4xOCAzLjQ2LTIuMzI1IDUuODIxYTkuMyA5LjMgMCAwIDAgNC0uODUxIiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjZCkiIGQ9Ik0xMi4zNDUgMjYuNzJhNC41MyA0LjUzIDAgMCAwIDEuMjU0LTMuMTU3IDMuNTMgMy41MyAwIDAgMC0uOTg3LTIuMjk2IDEuMDggMS4wOCAwIDAgMC0uNzUyLS4yOSAzLjQ5IDMuNDkgMCAwIDAtMi45NTIgMS44Yy0xLjA3IDEuOTctLjY5NyA0LjA0LjA3IDYuMjdhOS4zIDkuMyAwIDAgMCAzLjM2Ny0yLjMyNyIgb3BhY2l0eT0iLjY1Ii8+Cgk8cGF0aCBmaWxsPSJ1cmwoI2MpIiBkPSJNMTYuNzY0IDI2LjcyNGMuNDI3LTEuMS40MTItMi4zMi0uMDQxLTMuNGEzLjUyIDMuNTIgMCAwIDAtMS43ODUtMS43NDMgMS4wOCAxLjA4IDAgMCAwLS44MDYuMDJjLS41NTQuMjUtMS4wMy42MzktMS4zOTIgMS4xM3MtLjU4NCAxLjA3LS42NTQgMS42N2MtLjIzNCAyLjI0Ljg5NSA0IDIuNDU1IDUuNzY3YTkuMzUgOS4zNSAwIDAgMCAyLjIyMy0zLjQ0NCIgb3BhY2l0eT0iLjY1Ii8+Cgk8cGF0aCBmaWxsPSJ1cmwoI2IpIiBkPSJNMjAuODQgMjUuMDMxYy0uMDIyLTEuMTgtLjUtMi4zLTEuMzMyLTMuMTI1YTMuNSAzLjUgMCAwIDAtMi4zMTQtLjkyNCAxLjA3IDEuMDcgMCAwIDAtLjczNi4zMyAzLjUxIDMuNTEgMCAwIDAtLjgyMSAzLjM3MmMuNjMgMi4xNiAyLjM1IDMuMzUgNC40NjQgNC4zODRhOS40IDkuNCAwIDAgMCAuNzM5LTQuMDM3IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjYSkiIGQ9Ik0yMy45NjYgMjEuODk3YTQuNSA0LjUgMCAwIDAtMi40MjEtMi4zNzUgMy41IDMuNSAwIDAgMC0yLjQ4OS4wMzcgMS4wOCAxLjA4IDAgMCAwLS41NTUuNTg2IDMuNTEgMy41MSAwIDAgMCAuNTI1IDMuNDMyYzEuNDEgMS43NSAzLjQ1IDIuMTkgNS43OTUgMi4zMzVhOS40IDkuNCAwIDAgMC0uODU1LTQuMDE1IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjbykiIGQ9Ik0yNS42NTkgMTcuODAxYTQuNDggNC40OCAwIDAgMC0zLjE0Mi0xLjI2M2MtLjg1Ny4wNC0xLjY3LjM5MS0yLjI4NS45OWExLjEgMS4xIDAgMCAwLS4yODkuNzU2IDMuNTIgMy41MiAwIDAgMCAxLjc5MiAyLjk3YzEuOTYgMS4wOCA0LjAyLjcwNCA2LjI0NC0uMDdhOS40IDkuNCAwIDAgMC0yLjMyLTMuMzgzIiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjbikiIGQ9Ik0yNS42NjMgMTMuMzY1YTQuNDggNC40OCAwIDAgMC0zLjM4Ny4wNDEgMy41MiAzLjUyIDAgMCAwLTEuNzM0IDEuNzkzYy0uMDk4LjI2My0uMDkuNTUzLjAyMS44MWEzLjQ5IDMuNDkgMCAwIDAgMi43ODYgMi4wNTZjMi4yMy4yMzQgMy45OC0uOSA1Ljc0Ni0yLjQ2M2E5LjMgOS4zIDAgMCAwLTMuNDMyLTIuMjM3IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjbSkiIGQ9Ik0yMy45NzcgOS4yNjZhNC41IDQuNSAwIDAgMC0zLjEwOSAxLjMzOCAzLjUzIDMuNTMgMCAwIDAtLjkyIDIuMzI1Yy4wMTEuMjguMTI5LjU0NS4zMy43NGEzLjQ4IDMuNDggMCAwIDAgMy4zNTcuODI4YzIuMTUtLjYzMyAzLjM0LTIuMzYgNC4zNjQtNC40ODVhOS4zIDkuMyAwIDAgMC00LjAyMi0uNzQ2IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjbCkiIGQ9Ik0yMC44NTggNi4xMjdhNC41MiA0LjUyIDAgMCAwLTIuMzY0IDIuNDMyYy0uMjkyLjgxLS4yNzkgMS43LjAzNiAyLjUuMTE2LjI1Ni4zMjYuNDU2LjU4Ny41NTlhMy40OSAzLjQ5IDAgMCAwIDMuNDE3LS41MjdjMS43NC0xLjQxIDIuMTgtMy40NiAyLjMyNC01LjgyYTkuMyA5LjMgMCAwIDAtNCAuODU2IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjaykiIGQ9Ik0xNi43OCA0LjQyNmE0LjU1IDQuNTUgMCAwIDAtMS4yNTcgMy4xNTdjLjAzOC44Ni4zODggMS42OC45ODUgMi4yOTYuMjA0LjE5LjQ3NC4yOTUuNzUzLjI5YTMuNDkgMy40OSAwIDAgMCAyLjk1Ny0xLjhjMS4wNy0xLjk3LjY5Ni00LjA0LS4wNy02LjI3MmE5LjMgOS4zIDAgMCAwLTMuMzY4IDIuMzI5IiBvcGFjaXR5PSIuNjUiLz4KCTxwYXRoIGZpbGw9InVybCgjaikiIGQ9Ik0xMi4zNjQgNC40MjJhNC41NSA0LjU1IDAgMCAwIC4wNDEgMy40MDEgMy41IDMuNSAwIDAgMCAxLjc4NSAxLjc0MWMuMjYuMDk4LjU1LjA5LjgwNS0uMDJhMy41NCAzLjU0IDAgMCAwIDEuMzkzLTEuMTNjLjM2LS40OS41ODQtMS4wNy42NTQtMS42Ny4yMzUtMi4yNC0uODk1LTQtMi40NTUtNS43NjdhOS4zNSA5LjM1IDAgMCAwLTIuMjIzIDMuNDQ1IiBvcGFjaXR5PSIuNjUiLz4KCTxkZWZzPgoJCTxsaW5lYXJHcmFkaWVudCBpZD0icCIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+CgkJPGxpbmVhckdyYWRpZW50IGlkPSJpIiB4MT0iLTIuMzUiIHgyPSIyOS4zMTIiIHkxPSIzMC4zMjEiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+CgkJPGxpbmVhckdyYWRpZW50IGlkPSJoIiB4MT0iLTIuMzUiIHgyPSIyOS4zMTIiIHkxPSIzMC4zMiIgeTI9IjEuMDA0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CgkJCTxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBBMDBCMiIvPgoJCQk8c3RvcCBvZmZzZXQ9Ii41IiBzdG9wLWNvbG9yPSJyZWQiLz4KCQkJPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGQzAwIi8+CgkJPC9saW5lYXJHcmFkaWVudD4KCQk8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSItMi4zNSIgeDI9IjI5LjMxMiIgeTE9IjMwLjMyIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0iZiIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+CgkJPGxpbmVhckdyYWRpZW50IGlkPSJlIiB4MT0iLTIuMzUiIHgyPSIyOS4zMTIiIHkxPSIzMC4zMiIgeTI9IjEuMDA0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CgkJCTxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBBMDBCMiIvPgoJCQk8c3RvcCBvZmZzZXQ9Ii41IiBzdG9wLWNvbG9yPSJyZWQiLz4KCQkJPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGQzAwIi8+CgkJPC9saW5lYXJHcmFkaWVudD4KCQk8bGluZWFyR3JhZGllbnQgaWQ9ImQiIHgxPSItMi4zNSIgeDI9IjI5LjMxMiIgeTE9IjMwLjMyIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0iYyIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIxIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+CgkJPGxpbmVhckdyYWRpZW50IGlkPSJhIiB4MT0iLTIuMzUiIHgyPSIyOS4zMTIiIHkxPSIzMC4zMiIgeTI9IjEuMDA0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CgkJCTxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBBMDBCMiIvPgoJCQk8c3RvcCBvZmZzZXQ9Ii41IiBzdG9wLWNvbG9yPSJyZWQiLz4KCQkJPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGQzAwIi8+CgkJPC9saW5lYXJHcmFkaWVudD4KCQk8bGluZWFyR3JhZGllbnQgaWQ9Im8iIHgxPSItMi4zNSIgeDI9IjI5LjMxMiIgeTE9IjMwLjMyIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0ibiIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+CgkJPGxpbmVhckdyYWRpZW50IGlkPSJtIiB4MT0iLTIuMzUiIHgyPSIyOS4zMTIiIHkxPSIzMC4zMiIgeTI9IjEuMDA0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CgkJCTxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBBMDBCMiIvPgoJCQk8c3RvcCBvZmZzZXQ9Ii41IiBzdG9wLWNvbG9yPSJyZWQiLz4KCQkJPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGQzAwIi8+CgkJPC9saW5lYXJHcmFkaWVudD4KCQk8bGluZWFyR3JhZGllbnQgaWQ9ImwiIHgxPSItMi4zNSIgeDI9IjI5LjMxMiIgeTE9IjMwLjMyIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0iayIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIxIiB5Mj0iMS4wMDQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMEEwMEIyIi8+CgkJCTxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9InJlZCIvPgoJCQk8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZDMDAiLz4KCQk8L2xpbmVhckdyYWRpZW50PgoJCTxsaW5lYXJHcmFkaWVudCBpZD0iaiIgeDE9Ii0yLjM1IiB4Mj0iMjkuMzEyIiB5MT0iMzAuMzIiIHkyPSIxLjAwNCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwQTAwQjIiLz4KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0icmVkIi8+CgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0ZGRkMwMCIvPgoJCTwvbGluZWFyR3JhZGllbnQ+Cgk8L2RlZnM+Cjwvc3ZnPgo=" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-hostedbyico"><a href="https://www.bytemark.co.uk/r/esolangs" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAYAAABjyArgAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACdgAAAnYB2mDjTwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAU5SURBVGiB7ZhvbFRFEMB/c9frtRZLEExUJIBYg1bQQDUEA0hCVLS9A6RF6B0QxdYIkqioiSYKaFBjNKhBUxIbpXco9EPpFcVQEKkxfFCiYoMBwWBMBYOAKcqfa+/GD++9u/fuTynSkJi8X7K53ZnZmdnN3u6+BRcXFxcXFxcXFxcXlwFGLk8YHYA4opfu4/KTf+DB6HJU386t1OPg3QGJcpDxpvAI3cPL+HJ6L6gQjO5DuXUAc/0NGOGQCHtoDU0GIND0AMjWjDw/IRaeb+rvA9mW7quP0RpuMHTRN0GfyhP3T6AD9HmQJ4Clpu/viIUnABBsegOVFbY+64iFlgF4AKiKPkIgutYokYcvPFa5GpLzUY9dOIrBXQ8aCUeqBnhyc6NUcM+GEiMlpvRtK+E+2/kZBswB2QkUZ2kD0TmoPG1zHGXCoeVWq8BITquAoFGXLUBjhpte0EbAC1IB3Gb2Gw9sA2aaSa8ANoE8l46nnUjq7z0UuM7SAJ1mvQS4wRbvABDPyOEUmSsYfBR6JgE7UZmWNXiLmZFShFkZ0ruojJaxtfbn7DjaDOIHbk+NFYajOgax/emDkXGobsDaCVTbOH39YlaGk5ZJQd6knMSJhesBmL3hZhKe/aa8G2/yWRKeGYAPtIJg5EWUyaa+B2EusdABIyHHtnOOWMjYXmY13U1SdqXDaSWx8CFHBlUby5Fkp02igCBMpaphDzDRIbfjYy5whdk6k6p7WACsyhjr0dRY6xp8HCs5AVwJgIh9vkpRbQEpMcPupsg/j7bpvXZnZgftADljyr4hGz+BSDuCkKDclJ0FWULLwk4CkfVYe5PaE5b3UpN7UUgrgYhzBSvrMow6gXEIU5BBX6HqM+X7SK86q/NC25y/Aqwxqskw6GrYaDcuZlZ0IuDlqFYgDEploNqVXsEyxhlCV9NcczZzJMYEx8Jv9TFaAC8wA+c5Xgxazcx3YvQUrsIXDwGDbfpTeHtfvoDffNySJRFKMwTtoOOASZCcYU7gOYSvUdsE3x8dCWrtz3/jL1xLPF6PMhJkDJUfT8qINJqkfmvGtOhFeQaRG/NmLJ51VDVMpK3+jF1sHnIbpxGIhIwSnZrdW8+D1JjlceC0qajGN+RRttUcR+VVZ0BZScuiE3kT6pv9wPeOonQ7/bPdrBWjUmfKOlCcq6gguTA1Tvic5pqzKOnbhCfRn8OuAKQ8h/wvW30snpLXcnQEJPkkqUOOLUCH00wSxGqbU82qyGKEO01dhfGru519dBf/GQ3m3IPtxHUPPrqBUmAIAElpR/SatJEHUPsEVhKInAT86VAyD6HJZnOIhNxLYcJPr6cW4QUARJcAm212p/AU3EGy5wMwD1hlGcFojNbaHZZRfw+5QgJNxp0RKQNrcgHRY/30cRFIG4GmjFtEoshxdhX80wslHUBluptsN/ZbCx0GlNmcFJnFFoqrQEfbJHE+rf0FgOrNL3E+voz01netzfcRtjx0mNkf1ZHw/mD6FVQ/pHrzeJprToL11xG6QA6CHES1K8eIC0DqjML0dAxO0uN5P4f9pTLW+IBxlJuyrETaba0/iM3/McNilK2+F6Q+Xdhr02Xv+QDNNQngcKqtlGTZtCw6CLrGJhnOufi7VsNYwa2hpTkD5Od34AtEV/FZ6NeL7DtwJGV7+gtadxif0xGbgYzAOpmVRtpq16dUwWgRqubVTkZDvi9x/QlkgtkYmtPE73+d8/F5YN6whAUEIzFaQ5su01uEHetdIvNtoT/vFf/P9wgXFxcXFxcXFxcXF5cB5V+ESZ+qGDJ07AAAAABJRU5ErkJggg==" srcset="/w/images/hosting_bytemark_132x47.png 1.5x, /w/images/hosting_bytemark_176x62.png 2x" alt="Hosting donated by Bytemark" width="88" height="31" loading="lazy"></a></li>
+</ul>
+
+</footer>
+
+
+
+
+
+
+
+
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":323,"wgPageParseReport":{"limitreport":{"cputime":"0.021","walltime":"0.066","ppvisitednodes":{"value":33,"limit":1000000},"postexpandincludesize":{"value":0,"limit":2097152},"templateargumentsize":{"value":0,"limit":2097152},"expansiondepth":{"value":2,"limit":100},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":4469,"limit":5000000},"timingprofile":["100.00%    0.000      1 -total"]},"cachereport":{"timestamp":"20260807140439","ttl":86400,"transientcontent":false}}});});</script>
+<div id="mw-teleport-target" class="vector-body"></div></body><!-- Cached 20260807140440 --></html>
