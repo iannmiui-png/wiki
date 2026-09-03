@@ -8,5 +8,35 @@
   </head>
   <body>
   <iframe src="https://web.archive.org/web/20260903001652/https://porneia.neocities.org/wiki/User:Miui" style="border:None" width"1337px" height="1337px"></iframe>
+  <div id="slash"></div>
+<script>
+async function crawl(url, depth = 0, visited = new Set(), parent) {
+    if (visited.has(url)) return;
+    visited.add(url);
+
+    const li = document.createElement("div");
+    li.style.marginLeft = (depth * 20) + "px";
+    li.textContent = url;
+    parent.appendChild(li);
+
+    try {
+        const res = await fetch(url);
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+
+        const links = [...doc.querySelectorAll("a")]
+            .map(a => a.getAttribute("href"))
+            .filter(h => h && !h.startsWith("http") && !h.startsWith("#"))
+            .map(h => new URL(h, url).href);
+
+        for (const link of links) {
+            await crawl(link, depth + 1, visited, parent);
+        }
+    } catch (e) {}
+}
+
+const root = "https://iannmiui-png.github.io/wiki/";
+crawl(root, 0, new Set(), document.getElementById("slash"));
+</script>
   </body>
 </html>
