@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/><title>PROLAN/M interpreter in javascript</title></head>
+<body><center>
+<h1>PROLAN/M interpreter in javascript</h1>
+<table id="ops"><tr><th>form</th><th>meaning</th><th>form</th><th>meaning</th></tr>
+<tr><td>(<i>p</i>,<i>r</i>)</td><td>rule: rewrite <i>p</i> as <i>r</i></td><td>(,)</td><td>empty pattern: halt</td></tr>
+<tr><td>&nbsp;</td><td>rules are tried top to bottom</td><td>&nbsp;</td><td>halts also when no rule matches</td></tr>
+<tr><td>&nbsp;</td><td>first rule that matches fires, on its leftmost occurrence</td><td>($,<i>...</i>)</td><td>a pattern that never occurs is a comment</td></tr>
+<tr><td>&nbsp;</td><td>after a rewrite, scanning restarts from the top</td><td>&nbsp;</td><td>text outside parentheses is ignored</td></tr>
+</table><br>
+        <textarea rows="15" cols="70" id="code">
+($,  PROLAN/M sum program, written by Keymaker  )
+(=?,*=)
+(.A,A.)
+(.B,B.)
+(.C,C.)
+(.D,D.)
+(.E,E.)
+(.F,F.)
+(.G,G.)
+(.H,H.)
+(.I,I.)
+(.J,J.)
+(.P,P.)
+(.=,=.)
+(=...........,=#)
+(=..........,=9)
+(=.........,=8)
+(=........,=7)
+(=.......,=6)
+(=......,=5)
+(=.....,=4)
+(=....,=3)
+(=...,=2)
+(=..,=1)
+(=.,=0)
+(0*,*A.)
+(1*,*B..)
+(2*,*C...)
+(3*,*D....)
+(4*,*E.....)
+(5*,*F......)
+(6*,*G.......)
+(7*,*H........)
+(8*,*I.........)
+(9*,*J..........)
+(+*,*P...........)
+(a_,_bbbbbbbbbb)
+(_,)
+(b,a)
+(#0,_#)
+(#1,_b#)
+(#2,_bb#)
+(#3,_bbb#)
+(#4,_bbbb#)
+(#5,_bbbbb#)
+(#6,_bbbbbb#)
+(#7,_bbbbbbb#)
+(#8,_bbbbbbbb#)
+(#9,_bbbbbbbbb#)
+(=@,=1)
+(0@,1)
+(1@,2)
+(2@,3)
+(3@,4)
+(4@,5)
+(5@,6)
+(6@,7)
+(7@,8)
+(8@,9)
+(9@,@0)
+(a,@)
+(*,)
+(#,)
+(A,0)
+(B,1)
+(C,2)
+(D,3)
+(E,4)
+(F,5)
+(G,6)
+(H,7)
+(I,8)
+(J,9)
+(P,+)
+(,)
+</textarea><br>
+        <div id="workspace">&nbsp;</div><br>
+        <button onclick="init()">Update</button>
+        <button onclick="do_run()">Run</button>
+        <button onclick="do_step()">Step</button>
+        <input type="text" id="stepsize" size="6" value="1">
+        &nbsp;&nbsp;STRING <input type="text" id="stdin" size="14" value="12+34=?">
+        <br><br>
+        <div id="output"></div><br>
+<style>
+td {vertical-align:top} th {text-align:left} #output div {margin-left:1em;font-family:monospace} #output {color:#EAEAEA;background:#111111;font-family:monospace;padding:0em 0.2em;white-space:pre-wrap;text-align:left;max-width:70em;min-height:2em}
+td {vertical-align:top} th {text-align:left} #workspace div {margin-left:1em;font-family:monospace} #workspace {color:white;background:#111111;font-family:monospace;padding:0.3em 0.2em;text-align:left;max-width:70em;white-space:pre-wrap}
+#workspace b {color:#FF77AA} #workspace i {color:#77DDFF;font-style:normal}
+#output b {color:#FF77AA}
+#ops {border-collapse:collapse;font-size:0.85em;text-align:left}
+#ops td, #ops th {border:1px solid #999;padding:0.1em 0.5em}
+#code {font-family:monospace}
+</style>
+<script>
+// PROLAN/M : parser + rewriting machine
+// a program is a list of (pattern,replacement) rules; the first rule whose
+// pattern occurs in the string rewrites its leftmost occurrence, then
+// scanning restarts from the top. an empty pattern halts.
+var PL = (function () {
+
+  function parse(src) {
+    var rules = [], i = 0, err = null;
+    function fail(msg, at) { if (!err) err = { msg: msg, at: at }; }
+    while (i < src.length && !err) {
+      if (src[i] !== "(") { i++; continue; }
+      var open = i, close = src.indexOf(")", i + 1);
+      if (close < 0) { fail("unclosed '('", open); break; }
+      var inner = src.substring(open + 1, close);
+      var comma = inner.indexOf(",");
+      if (comma < 0) { fail("rule has no ','", open); break; }
+      rules.push({
+        pat: inner.substring(0, comma),
+        rep: inner.substring(comma + 1),
+        at: open
+      });
+      i = close + 1;
+    }
+    if (!err && !rules.length) fail("no rules", 0);
+    return { rules: rules, err: err };
+  }
+
+  function VM(rules, input) {
+    this.rules = rules; this.str = input || "";
+    this.steps = 0; this.halted = false; this.reason = null;
+    this.last = null;          // rule that fired most recently
+  }
+  // which rule fires next, and where — without firing it
+  VM.prototype.peek = function () {
+    for (var k = 0; k < this.rules.length; k++) {
+      var r = this.rules[k];
+      if (r.pat === "") return { rule: k, halt: true };
+      var j = this.str.indexOf(r.pat);
+      if (j >= 0) return { rule: k, pos: j, halt: false };
+    }
+    return { rule: -1, halt: true };
+  };
+  VM.prototype.done = function () { return this.halted; };
+  VM.prototype.step = function () {
+    if (this.halted) return;
+    var p = this.peek();
+    if (p.halt) {
+      this.halted = true;
+      this.reason = (p.rule < 0) ? "no rule applies" : "empty pattern in rule " + p.rule;
+      this.last = null;
+      return;
+    }
+    var r = this.rules[p.rule];
+    this.str = this.str.substring(0, p.pos) + r.rep + this.str.substring(p.pos + r.pat.length);
+    this.last = { rule: p.rule, pos: p.pos, len: r.rep.length };
+    this.steps++;
+  };
+  return { parse: parse, VM: VM };
+})();
+if (typeof module !== "undefined") module.exports = PL;
+
+
+var src = "", cp = null, vm = null, running = 0, log = [];
+var LOGMAX = 400, WINDOW = 500;
+
+function init() {
+  src = document.getElementById("code").value;
+  cp = PL.parse(src);
+  vm = new PL.VM(cp.rules, document.getElementById("stdin").value);
+  running = 0; log = [];
+  document.getElementById("output").innerHTML = "";
+  show();
+  if (cp.err) alert(cp.err.msg + " (at character " + cp.err.at + ")");
+}
+
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+// the string, with [a,b) marked, clipped to a window around the mark
+function band(s, a, b, tag) {
+  var lo = Math.max(0, a - WINDOW), hi = Math.min(s.length, b + WINDOW);
+  return (lo ? "\u2026" : "") + esc(s.substring(lo, a))
+    + "<" + tag + ">" + esc(s.substring(a, b)) + "</" + tag + ">"
+    + esc(s.substring(b, hi)) + (hi < s.length ? "\u2026" : "");
+}
+
+function show() {
+  var w = document.getElementById("workspace");
+  if (!vm) { w.innerHTML = "&nbsp;"; return; }
+  var head = "step <i>" + vm.steps + "</i>   length <i>" + vm.str.length + "</i>";
+  var body, foot;
+  if (vm.done()) {
+    head += "   <i>halted: " + esc(vm.reason) + "</i>";
+    body = esc(vm.str.substring(0, 2 * WINDOW)) + (vm.str.length > 2 * WINDOW ? "\u2026" : "");
+    foot = "";
+  } else {
+    var p = vm.peek(), r = vm.rules[p.rule];
+    head += "   rule <i>" + p.rule + "</i>";
+    body = band(vm.str, p.pos, p.pos + r.pat.length, "b");
+    foot = "\n(<b>" + esc(r.pat) + "</b>,<i>" + esc(r.rep) + "</i>)";
+  }
+  w.innerHTML = head + "\n" + body + foot;
+  flush();
+}
+
+// one trace line per rewrite: the string, with what was just written marked
+function note() {
+  var line;
+  if (vm.last) {
+    var l = vm.last;
+    line = ("    " + l.rule).slice(-4) + "  " + band(vm.str, l.pos, l.pos + l.len, "b");
+  } else {
+    line = "      " + esc(vm.str) + "   <b>[" + esc(vm.reason) + "]</b>";
+  }
+  log.push(line);
+  if (log.length > LOGMAX) log.shift();
+}
+
+function flush() {
+  var o = document.getElementById("output");
+  o.innerHTML = (log.length >= LOGMAX ? "\u2026\n" : "") + log.join("\n");
+  o.scrollTop = o.scrollHeight;
+}
+
+function do_step() {
+  if (!vm) init();
+  if (vm.done()) return;
+  var n = parseInt(document.getElementById("stepsize").value) || 1;
+  while (n-- > 0 && !vm.done()) { vm.step(); note(); }
+  show();
+}
+
+function do_run() {
+  if (!vm) init();
+  if (running) { running = 0; return; }
+  running = 1; chunk();
+}
+
+function chunk() {
+  if (!running) { show(); return; }
+  var n = 20000;
+  while (n-- > 0 && !vm.done()) { vm.step(); note(); }
+  show();
+  if (vm.done()) { running = 0; return; }
+  setTimeout(chunk, 0);
+}
+
+init();
+</script>
+</center>
+</body>
+</html>
