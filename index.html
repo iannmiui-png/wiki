@@ -5,38 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User:Miui</title>
     <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <style>
+      #split { display: flex; align-items: flex-start; gap: 1em; }
+      #split > iframe { flex: none; }
+      #slash { flex: 1 1 auto; min-width: 0; max-height: 1337px; overflow: auto; }
+      @media (max-width: 1600px) { #split { flex-wrap: wrap; } }
+    </style>
   </head>
   <body>
-  <iframe src="https://web.archive.org/web/20260903001652/https://porneia.neocities.org/wiki/User:Miui" style="border:None" width"1337px" height="1337px"></iframe>
-  <div id="slash"></div>
+  <div id="split">
+    <iframe name="viewer" src="https://web.archive.org/web/20260903001652/https://porneia.neocities.org/wiki/User:Miui" style="border:None" width="1337" height="1337"></iframe>
+    <div id="slash"></div>
+  </div>
 <script>
-async function crawl(url, depth = 0, visited = new Set(), parent) {
-    if (visited.has(url)) return;
-    visited.add(url);
+(async () => {
+  const out  = document.getElementById("slash");
+  const base = new URL("./", location.href).pathname;
+  const SKIP = /\.(png|jpe?g|gif|svg|webp|ico|css|js|json|zip|pdf|mp[34]|woff2?|ttf|xml|txt|md)$/i;
 
-    const li = document.createElement("div");
-    li.style.marginLeft = (depth * 20) + "px";
-    li.textContent = url;
-    parent.appendChild(li);
+  function repos() {
+    const owner = location.hostname.split(".")[0];
+    const seg   = base.split("/").filter(Boolean);
+    const list  = [[owner + "/" + location.hostname, base.slice(1)]];
+    if (seg.length) list.push([owner + "/" + seg[0], seg.slice(1).join("/") + (seg.length > 1 ? "/" : "")]);
+    return list;
+  }
 
-    try {
+  async function fromRepo() {
+    for (const [repo, prefix] of repos()) {
+      try {
+        const r = await fetch("https://api.github.com/repos/" + repo + "/git/trees/HEAD?recursive=1");
+        if (!r.ok) continue;
+        const t = (await r.json()).tree;
+        if (!Array.isArray(t)) continue;
+        const paths = t.filter(n => n.type === "blob").map(n => n.path)
+          .filter(p => p.startsWith(prefix)).map(p => p.slice(prefix.length))
+          .filter(p => p && !p.startsWith(".") && !SKIP.test(p));
+        if (paths.length) return paths;
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  async function fromCrawl() {
+    const seen = new Set(["./"]), queue = ["./"], pages = [];
+    while (queue.length && pages.length < 500) {
+      const url = queue.shift();
+      try {
         const res = await fetch(url);
-        const html = await res.text();
-        const doc = new DOMParser().parseFromString(html, "text/html");
-
-        const links = [...doc.querySelectorAll("a")]
-            .map(a => a.getAttribute("href"))
-            .filter(h => h && !h.startsWith("http") && !h.startsWith("#"))
-            .map(h => new URL(h, url).href);
-
-        for (const link of links) {
-            await crawl(link, depth + 1, visited, parent);
+        if (!res.ok) continue;
+        if (!(res.headers.get("content-type") || "").includes("text/html")) continue;
+        pages.push(new URL(url, location.href).pathname);
+        const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+        for (const a of doc.querySelectorAll("a[href]")) {
+          const h = a.getAttribute("href");
+          if (!h || h[0] === "#" || /^(mailto|tel|javascript):/i.test(h)) continue;
+          let u;
+          try { u = new URL(h, new URL(url, location.href)); } catch (e) { continue; }
+          u.hash = ""; u.search = "";
+          if (u.origin !== location.origin) continue;
+          if (!u.pathname.startsWith(base) || SKIP.test(u.pathname) || seen.has(u.pathname)) continue;
+          seen.add(u.pathname); queue.push(u.pathname);
         }
-    } catch (e) {}
-}
+      } catch (e) {}
+    }
+    return pages.map(p => p.slice(base.length)).filter(Boolean);
+  }
 
-const root = "https://iannmiui-png.github.io/wiki/";
-crawl(root, 0, new Set(), document.getElementById("slash"));
+  function nest(paths) {
+    const root = { dirs: new Map(), files: [] };
+    for (const p of paths.sort()) {
+      const parts = p.split("/").filter(Boolean);
+      let node = root;
+      parts.forEach((part, i) => {
+        if (i === parts.length - 1) node.files.push([part, p]);
+        else {
+          if (!node.dirs.has(part)) node.dirs.set(part, { dirs: new Map(), files: [] });
+          node = node.dirs.get(part);
+        }
+      });
+    }
+    return root;
+  }
+
+  function draw(node) {
+    const ul = document.createElement("ul");
+    for (const [name, child] of node.dirs) {
+      const li = document.createElement("li");
+      li.textContent = name + "/";
+      li.appendChild(draw(child));
+      ul.appendChild(li);
+    }
+    for (const [name, path] of node.files) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "./" + path;
+      a.target = "viewer";
+      a.textContent = name;
+      li.appendChild(a);
+      ul.appendChild(li);
+    }
+    return ul;
+  }
+
+  out.textContent = "building tree\u2026";
+  const paths = (await fromRepo()) || (await fromCrawl());
+  out.textContent = "";
+  if (!paths.length) { out.textContent = "no pages found"; return; }
+  out.appendChild(draw(nest(paths)));
+})();
 </script>
   </body>
 </html>
