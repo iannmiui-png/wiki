@@ -1,0 +1,1004 @@
+# 15-bit binary counter as a RetroArch cheat file.
+# Cell 14 (rightmost on screen) = LSB, carries ripple leftward,
+# so the row reads as a binary number counting up once per frame.
+#
+# Technique: ripple carry with paired conditionals.
+#   inc LSB
+#   if LSB==2: inc next bit      (carry out, while the 2 is still there)
+#   if LSB==2: set LSB=0         (then clear it)
+#   ... repeat up the chain; MSB overflow is dropped.
+
+N = 15
+prog = []  # (op, address, value, desc)
+
+prog.append(('inc', N-1, 1, 'count_lsb'))
+for b in range(N-1, 0, -1):
+    prog.append(('rie', b, 2, f'carry_chk_b{b}a'))
+    prog.append(('inc', b-1, 1, f'carry_out_b{b}'))
+    prog.append(('rie', b, 2, f'carry_chk_b{b}b'))
+    prog.append(('set', b, 0, f'carry_clr_b{b}'))
+prog.append(('rie', 0, 2, 'ovf_chk'))
+prog.append(('set', 0, 0, 'ovf_drop'))
+
+TYPES = {'set': '1', 'inc': '2', 'dec': '3', 'rie': '4', 'rne': '5', 'ril': '6', 'rig': '7'}
+A = []
+for i, (op, addr, val, desc) in enumerate(prog):
+    A += [f'cheat{i}_address = "{addr}"',
+          f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',
+          f'cheat{i}_cheat_type = "{TYPES[op]}"',
+          f'cheat{i}_code = ""',
+          f'cheat{i}_desc = "{desc}"',
+          f'cheat{i}_enable = "true"',
+          f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',
+          f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',
+          f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',
+          f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',
+          f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',
+          f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{val}"']
+A.append(f'cheats = "{len(prog)}"')
+
+with open('binary_counter_15bit.cht', 'w') as f:
+    f.write('\n'.join(A))
+print(f"{len(prog)} cheats written")
+
+# ---- verify by simulating RetroArch cheat semantics ----
+mem = [0]*32
+mem[7] = 1   # ROM seeds cell 7 before cheats take over -> counter starts at bit7 = 128
+def frame():
+    skip = False
+    for op, addr, val, _ in prog:
+        if skip:
+            skip = False
+            continue
+        if op == 'set': mem[addr] = val
+        elif op == 'inc': mem[addr] = (mem[addr] + val) & 0xFF
+        elif op == 'rie': skip = (mem[addr] != val)
+
+def value():
+    return int(''.join(str(mem[i]) for i in range(15)), 2)
+
+start = value()
+ok = True
+for f in range(1, 40000):
+    frame()
+    if value() != (start + f) % (1 << 15):
+        ok = False; print(f"FAIL at frame {f}: {value()}"); break
+    if any(c not in (0, 1) for c in mem[:15]):
+        ok = False; print(f"non-binary cell at frame {f}"); break
+print(f"starts at {start}, counts correctly for 40000 frames incl. wraparound: {ok}")
+=== cyclic generator ===
+# CYCLIC CELLULAR AUTOMATON (rock-paper-scissors) on the multicart menu.
+# 15 cells, 3 states {0,1,2}. Cell i advances to (S[i]+1)%3 if either
+# neighbor already holds that target state. Classic "excitable medium" /
+# Greenberg-Hastings dynamics -- structurally nothing like a lookup-table
+# elementary CA. set/inc/rie only. Lives at the verified-safe $0550 window.
+S,NX,TMP,INIT = 0x0550, 0x0560, 0x0570, 0x0571
+G=15
+prog=[]
+# seed: a asymmetric 3-color streak so waves actually form
+SEED=[0,0,1,1,2,0,0,0,1,2,2,0,1,0,2]
+for i in range(G): prog += [('rie',INIT,0,f'seed_g{i}'),('set',S+i,SEED[i],f'seed{i}')]
+prog += [('rie',INIT,0,'seedbg'),('set',INIT,1,'seedb')]
+
+for i in range(G):
+    prog.append(('set',NX+i,SEED[i] if False else None,f'placeholder'))  # replaced below
+prog = [p for p in prog if p[3]!='placeholder']
+# default: NX[i] = S[i] (copy-through if nothing eats it) -- via 3-way copy
+for i in range(G):
+    for v in range(3):
+        prog += [('rie',S+i,v,f'nxdef{i}_{v}g'),('set',NX+i,v,f'nxdef{i}_{v}')]
+# advance rule: for each cell i, each current state s, each neighbor side,
+# target t=(s+1)%3; AND-gate via default-true/kill-on-mismatch (3-valued: 2 kills per condition)
+for i in range(G):
+    L,R = (i-1)%G, (i+1)%G
+    for s in range(3):
+        t=(s+1)%3
+        others_s = [x for x in range(3) if x!=s]
+        others_t = [x for x in range(3) if x!=t]
+        for side,nb in (('L',S+L),('R',S+R)):
+            tag=f'adv{i}_{s}_{side}'
+            prog.append(('set',TMP,1,f'{tag}_init'))
+            for w in others_s: prog.append(('rie',S+i,w,f'{tag}_ki{w}'))  # if S[i]==w (wrong), kill next
+            for w in others_s: prog[-1]=prog[-1]  # (placeholder, real kill line follows)
+        # rebuild properly below
+prog = [p for p in prog if not p[3].startswith('adv')]
+for i in range(G):
+    L,R=(i-1)%G,(i+1)%G
+    for s in range(3):
+        t=(s+1)%3
+        others_s=[x for x in range(3) if x!=s]
+        for side,nbaddr in (('L',S+L),('R',S+R)):
+            tag=f'adv{i}_{s}_{side}'
+            others_t=[x for x in range(3) if x!=t]
+            prog.append(('set',TMP,1,f'{tag}_init'))
+            for w in others_s:
+                prog.append(('rie',S+i,w,f'{tag}_kis'))
+                prog.append(('set',TMP,0,f'{tag}_kis_do'))
+            for w in others_t:
+                prog.append(('rie',nbaddr,w,f'{tag}_kin'))
+                prog.append(('set',TMP,0,f'{tag}_kin_do'))
+            prog.append(('rie',TMP,1,f'{tag}_chk'))
+            prog.append(('set',NX+i,t,f'{tag}_apply'))
+# copy back NX -> S
+for i in range(G):
+    for v in range(3):
+        prog += [('rie',NX+i,v,f'cp{i}_{v}g'),('set',S+i,v,f'cp{i}_{v}')]
+# --- corruption mapping: state 1 -> sprite rain, state 2 -> palette flicker ---
+for i in range(G):
+    prog += [('rie',S+i,1,f'rain_g{i}'),('inc',0x0200+4*i,1,f'rain_y{i}')]
+for i in range(G):
+    prog += [('rie',S+i,2,f'flick_g{i}'),('inc',0x0202+4*i,1,f'flick_a{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_cyclic.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> multicart_cyclic.cht (types {sorted(set(op for op,_,_,_ in prog))})")
+
+# ---- verify: cheat-pass semantics vs pure reference cyclic CA ----
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+mem=[0]*0x600
+ref=SEED[:]
+ok=True
+for f in range(300):
+    cheat_pass(mem)
+    nxt=[]
+    for i in range(G):
+        L,R=(i-1)%G,(i+1)%G
+        t=(ref[i]+1)%3
+        nxt.append(t if (ref[L]==t or ref[R]==t) else ref[i])
+    ref=nxt
+    if mem[S:S+G]!=ref:
+        ok=False; print(f"MISMATCH at gen {f}: got {mem[S:S+G]} want {ref}"); break
+print("cyclic CA matches reference for 300 generations:", ok)
+for f in range(6):
+    pass
+# show a short evolution
+mem2=[0]*0x600; hist=[SEED[:]]
+for f in range(20):
+    cheat_pass(mem2); hist.append(mem2[S:S+G])
+for row in hist[:12]:
+    print(''.join(str(v) for v in row))
+
+===reversible generator===
+# SECOND-ORDER REVERSIBLE RULE 90 on the multicart menu.
+# next[i] = prev[i] XOR left[i] XOR right[i]  (mod 2)
+# Genuinely invertible (swap current/previous and it runs backward),
+# non-dissipative. Two generations of memory instead of a lookup table.
+# set/inc/rie only.
+S,P,NX,TMP,INIT = 0x0552, 0x0562, 0x0572, 0x0582, 0x0583
+G=15
+SEED_S=[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+SEED_P=[0]*15
+prog=[]
+for i in range(G):
+    prog += [('rie',INIT,0,f'si{i}g'),('set',S+i,SEED_S[i],f'si{i}')]
+for i in range(G):
+    prog += [('rie',INIT,0,f'pi{i}g'),('set',P+i,SEED_P[i],f'pi{i}')]
+prog += [('rie',INIT,0,'idg'),('set',INIT,1,'id')]
+
+# NX default 0, then set 1 on the 4 odd-parity branches of (left,prev,right)
+for i in range(G):
+    prog.append(('set',NX+i,0,f'nx0_{i}'))
+L=lambda i:(i-1)%G; R=lambda i:(i+1)%G
+branches=[(1,0,0),(0,1,0),(0,0,1),(1,1,1)]
+for i in range(G):
+    for (l,p,r) in branches:
+        tag=f'xor{i}_{l}{p}{r}'
+        prog.append(('set',TMP,1,f'{tag}_init'))
+        prog.append(('rie',S+L(i),1-l,f'{tag}_kl'))
+        prog.append(('set',TMP,0,f'{tag}_kld'))
+        prog.append(('rie',P+i,1-p,f'{tag}_kp'))
+        prog.append(('set',TMP,0,f'{tag}_kpd'))
+        prog.append(('rie',S+R(i),1-r,f'{tag}_kr'))
+        prog.append(('set',TMP,0,f'{tag}_krd'))
+        prog.append(('rie',TMP,1,f'{tag}_chk'))
+        prog.append(('set',NX+i,1,f'{tag}_apply'))
+# P := S (before S is overwritten)
+for i in range(G):
+    prog += [('set',P+i,0,f'pc{i}c'),('rie',S+i,1,f'pc{i}k'),('set',P+i,1,f'pc{i}s')]
+# S := NX
+for i in range(G):
+    prog += [('set',S+i,0,f'sc{i}c'),('rie',NX+i,1,f'sc{i}k'),('set',S+i,1,f'sc{i}s')]
+
+# --- corruption: alive cell drives cursor wobble (signed via cell parity of index) ---
+for i in range(0,G,2):
+    prog += [('rie',S+i,1,f'roul_g{i}'),('inc',0x0115,1,f'roul_up{i}')]
+for i in range(1,G,2):
+    prog += [('rie',S+i,1,f'roulb_g{i}'),('inc',0x0115,255,f'roul_dn{i}')]  # +255 = -1 mod 256
+# sprite jitter driven by cell too, different sprites than the cyclic file (16-30)
+for i in range(G):
+    prog += [('rie',S+i,1,f'jit_g{i}'),('inc',0x0200+4*(15+i),1,f'jit_y{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_reversible.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> multicart_reversible.cht (types {sorted(set(op for op,_,_,_ in prog))})")
+
+# ---- verify: cheat-pass semantics vs pure reference (and check reversibility) ----
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+mem=[0]*0x600
+s_ref=SEED_S[:]; p_ref=SEED_P[:]
+ok=True
+history=[]
+for f in range(300):
+    cheat_pass(mem)
+    nxt=[p_ref[i]^s_ref[(i-1)%G]^s_ref[(i+1)%G] for i in range(G)]
+    p_ref, s_ref = s_ref, nxt
+    history.append(s_ref[:])
+    if mem[S:S+G]!=s_ref or mem[P:P+G]!=p_ref:
+        ok=False; print(f"MISMATCH at gen {f}"); break
+print("second-order reversible Rule 90 matches reference for 300 generations:", ok)
+
+# reversibility check on the pure reference: run forward N steps, then run
+# the SAME update rule with roles swapped (prev<->current) N steps -> back to start
+def fwd(s,p,n):
+    for _ in range(n):
+        nxt=[p[i]^s[(i-1)%G]^s[(i+1)%G] for i in range(G)]
+        p,s=s,nxt
+    return s,p
+s0,p0 = SEED_S[:], SEED_P[:]
+s10,p10 = fwd(s0,p0,10)
+# time-reverse: swap current/previous roles and run forward again = backward in original time
+s_back, p_back = fwd(p10, s10, 10)
+print("running the SAME rule backward (roles swapped) for 10 steps recovers the seed:",
+      s_back==p0 and p_back==s0 or s_back==s0)
+print("seed:      ", SEED_S)
+print("+10 steps: ", s10)
+print("reversed:  ", s_back)
+===ternary reversible===
+# TERNARY LINEAR REVERSIBLE CA -- efficient version.
+# next[i] = (prev[i] + left[i] + right[i]) mod 3, built by SEQUENTIAL
+# modular accumulation (copy P, add L with correction, add R with
+# correction) instead of a 27-way truth table -- since the rule is
+# linear, no combinatorial AND-gate is needed at all. Collapses from
+# 6377 cheats to well under 6000. set/inc/dec/rig/rie only.
+S,P,NX,INIT = 0x0550, 0x0560, 0x0570, 0x0581
+G=15
+SEED_S=[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+SEED_P=[0]*15
+prog=[]
+for i in range(G): prog += [('rie',INIT,0,f'si{i}g'),('set',S+i,SEED_S[i],f'si{i}')]
+for i in range(G): prog += [('rie',INIT,0,f'pi{i}g'),('set',P+i,SEED_P[i],f'pi{i}')]
+prog += [('rie',INIT,0,'idg'),('set',INIT,1,'id')]
+
+for i in range(G):
+    L,R=(i-1)%G,(i+1)%G
+    # NX[i] := P[i]  (3-way copy)
+    for v in range(3): prog += [('rie',P+i,v,f'cpP{i}_{v}g'),('set',NX+i,v,f'cpP{i}_{v}')]
+    # NX[i] += S[L], gated on S[L]'s value (only 3 cases, not 9)
+    for v in (1,2):
+        prog += [('rie',S+L,v,f'addL{i}_{v}g'),('inc',NX+i,v,f'addL{i}_{v}')]
+    prog += [('rig',NX+i,2,f'modL{i}g'),('dec',NX+i,3,f'modL{i}')]
+    # NX[i] += S[R], gated on S[R]'s value
+    for v in (1,2):
+        prog += [('rie',S+R,v,f'addR{i}_{v}g'),('inc',NX+i,v,f'addR{i}_{v}')]
+    prog += [('rig',NX+i,2,f'modR{i}g'),('dec',NX+i,3,f'modR{i}')]
+
+# P := S ; S := NX  (3-way copies)
+for i in range(G):
+    for v in range(3): prog += [('rie',S+i,v,f'pc{i}_{v}g'),('set',P+i,v,f'pc{i}_{v}')]
+for i in range(G):
+    for v in range(3): prog += [('rie',NX+i,v,f'sc{i}_{v}g'),('set',S+i,v,f'sc{i}_{v}')]
+
+# corruption: same channels as before
+for i in range(G):
+    prog += [('rie',S+i,1,f'rain_g{i}'),('inc',0x0200+4*i,1,f'rain_y{i}')]
+for i in range(G):
+    prog += [('rie',S+i,2,f'flick_g{i}'),('inc',0x0202+4*i,1,f'flick_a{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_ternary_reversible.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> multicart_ternary_reversible.cht (under 6000: {len(prog)<6000})")
+
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='dec': mem[a]=(mem[a]-v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+        elif op=='rig': skip=not(mem[a]>v)
+mem=[0]*0x600
+s_ref=SEED_S[:]; p_ref=SEED_P[:]
+ok=True
+for f in range(400):
+    cheat_pass(mem)
+    nxt=[(p_ref[i]+s_ref[(i-1)%G]+s_ref[(i+1)%G])%3 for i in range(G)]
+    p_ref,s_ref = s_ref, nxt
+    if mem[S:S+G]!=s_ref or mem[P:P+G]!=p_ref:
+        ok=False; print(f"MISMATCH at gen {f}: got S={mem[S:S+G]} want {s_ref}"); break
+print("efficient ternary linear reversible CA matches reference for 400 generations:", ok)
+
+def fwd(s,p,n):
+    for _ in range(n):
+        nxt=[(p[i]+s[(i-1)%G]+s[(i+1)%G])%3 for i in range(G)]
+        p,s=s,nxt
+    return s,p
+def back(s,p,n):
+    for _ in range(n):
+        prevS = p[:]
+        prevP = [(s[i]-p[(i-1)%G]-p[(i+1)%G])%3 for i in range(G)]
+        s,p = prevS, prevP
+    return s,p
+s0,p0 = SEED_S[:], SEED_P[:]
+s10,p10 = fwd(s0,p0,10)
+s_back,p_back = back(s10,p10,10)
+print("reversibility preserved:", s_back==s0 and p_back==p0)
+
+mem2=[0]*0x600; hist=[SEED_S[:]]
+for f in range(24): cheat_pass(mem2); hist.append(mem2[S:S+G])
+for row in hist: print(''.join(str(v) for v in row))
+===pixel corruptions===
+# Automata-based corruption pack for 1200-in-1 (J), mapper 227, FCEUmm.
+# Rule 110 core at $0550 (region verified untouched by the menu bank).
+# Corruption sections are small and labeled so they can be toggled
+# individually in RetroArch's cheat menu; two risky ones ship disabled.
+SB=0x0550; NX=SB+15; TMP=SB+30; INIT=SB+31; T2=SB+32; T3=SB+33
+G=15; S1=[(1,1,0),(1,0,1),(0,1,1),(0,1,0),(0,0,1)]
+
+prog=[('rie',INIT,0,'seed_gate',True),('set',SB+7,1,'seed',True),('set',INIT,1,'seeded',True)]
+for D in range(G): prog.append(('set',NX+D,0,f'ca_in{D}',True))
+for D in range(G):
+    V,K,W=SB+(D-1)%G,SB+D,SB+(D+1)%G
+    for (O,P,Q) in S1:
+        E=f'ca_c{D}p{O}{P}{Q}'
+        prog += [('set',TMP,0,f'{E}it',True),('rie',V,O,f'{E}cl',True),('set',TMP,1,f'{E}s1',True),
+                 ('rie',K,1-P,f'{E}cc',True),('set',TMP,0,f'{E}rc',True),
+                 ('rie',W,1-Q,f'{E}cr',True),('set',TMP,0,f'{E}rr',True),
+                 ('rie',TMP,1,f'{E}ct',True),('set',NX+D,1,f'{E}sn',True)]
+for D in range(G):
+    prog += [('set',SB+D,0,f'ca_cp{D}c',True),('rie',NX+D,1,f'ca_cp{D}k',True),('set',SB+D,1,f'ca_cp{D}s',True)]
+
+# --- corruption 1: SPRITE RAIN -- alive cell i nudges OAM sprite i's Y ---
+for i in range(15):
+    prog += [('rie',SB+i,1,f'rain_g{i}',True),('inc',0x0200+4*i,1,f'rain_y{i}',True)]
+# --- corruption 2: PALETTE FLICKER -- alive cell i cycles sprite i attr ---
+for i in range(0,15,2):
+    prog += [('rie',SB+i,1,f'flick_g{i}',True),('inc',0x0202+4*i,1,f'flick_a{i}',True)]
+# --- corruption 3: CURSOR ROULETTE -- glider edge (c6 alive, c7 dead) nudges $0115 ---
+prog += [('set',T2,0,'roul_c',True),('rie',SB+6,1,'roul_a',True),('set',T2,1,'roul_s',True),
+         ('rie',SB+7,1,'roul_b',True),('set',T2,0,'roul_k',True),
+         ('rie',T2,1,'roul_g',True),('inc',0x0115,1,'roulette',True)]
+# --- corruption 4 (DISABLED): STATE SCRAMBLE -- cell 3 pokes NMI mode flag $0101 ---
+prog += [('rie',SB+3,1,'scram_g',False),('inc',0x0101,1,'scramble',False)]
+# --- corruption 5 (DISABLED): RESET ROULETTE -- cells 13&14 both alive feeds the
+#     NMI's bank-switch comparison ($0106>=#$E0 path -> JMP ($FFFC)) ---
+prog += [('set',T3,0,'rst_c',False),('rie',SB+13,1,'rst_a',False),('set',T3,1,'rst_s',False),
+         ('rie',SB+14,0,'rst_b',False),('set',T3,0,'rst_k',False),
+         ('rie',T3,1,'rst_g1',False),('set',0x0106,0xE0,'rst_v',False),
+         ('rie',T3,1,'rst_g2',False),('set',0x0104,0x00,'rst_m',False)]
+
+# template for automata-gated CLASSIC cheats in whatever game you enter:
+# find the address with RetroArch's cheat search, then append e.g.
+#   prog += [('rie',SB+7,1,'inv_g',True),('set',0x00XX,0xVAL,'flicker_invuln',True)]
+# -> the cheat holds only while the automaton's center column is alive.
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d,en) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "{"true" if en else "false"}"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_corruptions.cht','w').write('\n'.join(A))
+en=sum(1 for *_,e in prog if e)
+print(f"{len(prog)} cheats ({en} enabled, {len(prog)-en} shipped disabled) -> multicart_corruptions.cht")
+
+# sanity sim: corruption event rates over 300 frames
+mem=[0]*0x800; rain=0; roul=0
+for f in range(300):
+    skip=False
+    for op,a,v,d,enb in prog:
+        if not enb: continue
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc':
+            mem[a]=(mem[a]+v)&0xFF
+            if 0x200<=a<0x240: rain+=1
+            if a==0x115: roul+=1
+        elif op=='rie': skip=(mem[a]!=v)
+print(f"300 frames: {rain} sprite-Y nudges, {roul} cursor-roulette nudges")
+
+===corruption via sound channel===
+# POPULATION-DRIVEN MELODY on the EXISTING rule110_music.nes -- no new ROM.
+# rule110_music.nes writes $4002 every frame from NLO[step], step = zp $F4.
+# This cheat overrides $F4 every frame with the LIVE population count of
+# the Rule 110 ring (0-15 alive cells): the automaton doesn't ride on top
+# of a fixed tune, it directly selects which scale degree sounds, live,
+# every frame. Only set/inc/rie.
+G=15; S1=[(1,1,0),(1,0,1),(0,1,1),(0,1,0),(0,0,1)]
+SB,NX,TMP,INIT = 0,15,30,31
+F4 = 0x00F4     # ROM's own step register, real RAM, real address
+
+prog=[('rie',INIT,0,'seedg'),('set',SB+7,1,'seed'),('set',INIT,1,'seeded')]
+for D in range(G): prog.append(('set',NX+D,0,f'ca_in{D}'))
+for D in range(G):
+    V,K,W=SB+(D-1)%G,SB+D,SB+(D+1)%G
+    for (O,P,Q) in S1:
+        E=f'ca_c{D}p{O}{P}{Q}'
+        prog += [('set',TMP,0,f'{E}it'),('rie',V,O,f'{E}cl'),('set',TMP,1,f'{E}s1'),
+                 ('rie',K,1-P,f'{E}cc'),('set',TMP,0,f'{E}rc'),
+                 ('rie',W,1-Q,f'{E}cr'),('set',TMP,0,f'{E}rr'),
+                 ('rie',TMP,1,f'{E}ct'),('set',NX+D,1,f'{E}sn')]
+for D in range(G):
+    prog += [('set',SB+D,0,f'ca_cp{D}c'),('rie',NX+D,1,f'ca_cp{D}k'),('set',SB+D,1,f'ca_cp{D}s')]
+
+# --- population count -> the ROM's own step register, every frame ---
+prog.append(('set',F4,0,'pop_zero'))
+for i in range(G):
+    prog += [('rie',SB+i,1,f'pop_g{i}'),('inc',F4,1,f'pop_a{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('rule110_population_melody.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> rule110_population_melody.cht (types {sorted(set(op for op,_,_,_ in prog))})")
+===[[Dafne]] corruptor===
+# The Dafne PLANE on the stock rule110.nes: the history scroll draws
+#   bit(f, j) = threshold( (seed[f%5, j%5] + (j//5 + 7*(f//5)) * M[f%5, j%5]) mod 27 )
+# i.e. screen row = plane row, 15 columns = block columns C=0,1,2 (a crop).
+#
+# State:  S[r][j] at 32+15r+j  (r=0..4, j=0..14): row r of current band
+#         phi=110 (row shown this frame), INIT=111, w=112 (temp)
+# Frame:  [init once] -> display row phi -> phi++ -> if phi==5: band += 7M, phi=0
+
+Mx = [[0,4,8,3,7],[4,8,3,4,5],[8,3,7,5,3],[3,4,5,3,1],[7,5,3,1,0]]
+def L2n(c): return 26 if c=='0' else ord(c)-65
+SEED = [[L2n(c) for c in row] for row in ["DAFNE","ABRDN","FR0RF","NDRBA","ENFAD"]]
+SB, PHI, INIT, W = 32, 110, 111, 112
+adr = lambda r,j: SB + 15*r + j
+
+prog = []
+# --- init (gated INIT==0): S[r][j] = seed[r][p] + c*M[r][p] mod 27, phi=0 ---
+for r in range(5):
+    for j in range(15):
+        c,p = j//5, j%5
+        v = (SEED[r][p] + c*Mx[r][p]) % 27
+        prog += [('rie',INIT,0,f'i_g{r}_{j}'), ('set',adr(r,j),v,f'i_v{r}_{j}')]
+prog += [('rie',INIT,0,'i_phig'), ('set',PHI,0,'i_phi'), ('set',INIT,1,'i_done')]
+# --- display row phi: D[j] = (S[phi][j] > 13) ---
+for r in range(5):
+    for j in range(15):
+        prog += [('set',W,0,f'd_w0_{r}_{j}'),
+                 ('rig',adr(r,j),13,f'd_thr_{r}_{j}'), ('set',W,1,f'd_w1_{r}_{j}'),
+                 ('rne',PHI,r,f'd_kill_{r}_{j}'), ('set',W,0,f'd_wk_{r}_{j}'),
+                 ('rie',PHI,r,f'd_clrg_{r}_{j}'), ('set',j,0,f'd_clr_{r}_{j}'),
+                 ('rie',W,1,f'd_setg_{r}_{j}'), ('set',j,1,f'd_set_{r}_{j}')]
+# --- advance phase; on wrap, advance band ---
+prog += [('inc',PHI,1,'p_inc')]
+for r in range(5):
+    for j in range(15):
+        m = Mx[r][j%5]
+        if m == 0: continue
+        step = (7*m) % 27
+        prog += [('rie',PHI,5,f'b_g{r}_{j}'), ('inc',adr(r,j),step,f'b_a{r}_{j}'),
+                 ('rig',adr(r,j),26,f'b_m{r}_{j}'), ('dec',adr(r,j),27,f'b_s{r}_{j}')]
+prog += [('rie',PHI,5,'p_wrapg'), ('set',PHI,0,'p_wrap')]
+
+T = {'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A = []
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"', f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"', f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""', f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"', f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"', f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"', f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"', f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"', f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"', f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('daffine.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> daffine.cht")
+
+# ---------------- verify against the closed form ----------------
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='dec': mem[a]=(mem[a]-v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+        elif op=='rne': skip=(mem[a]==v)
+        elif op=='rig': skip=not(mem[a]>v)
+
+def closed_form(f, j):
+    r,p,c,R = f%5, j%5, j//5, f//5
+    return (SEED[r][p] + (c + 7*R)*Mx[r][p]) % 27
+
+mem=[0]*128; mem[7]=1     # ROM boot state
+FR=400
+rows=[]
+ok=True
+for f in range(FR):
+    cheat_pass(mem)
+    rows.append(mem[0:15])
+    exp=[1 if closed_form(f,j)>13 else 0 for j in range(15)]
+    if rows[-1]!=exp:
+        ok=False; print(f"MISMATCH at plane row {f}: got {rows[-1]} want {exp}"); break
+print(f"all {FR} plane rows match the closed form exactly: {ok}")
+print("vertical period of the plane texture: 135 rows (5*27):",
+      rows[:135]==rows[135:270])
+print("\nfirst 25 plane rows (5 bands) as drawn:")
+for f in range(25):
+    print(('  R%d ' % (f//5) if f%5==0 else '     ') +
+          ''.join('#' if b else '.' for b in rows[f]))
+=== mod40 corruption ===
+# HYBRID TERNARY / MOD-40 ORBIT -- pure display, no sound, no register pokes.
+# Runs on the EXISTING rule110.nes (untouched display ROM).
+#
+# T[i] in {0,1,2}: cyclic rock-paper-scissors CA (excitable-medium rule --
+#   cell advances to the next state if a neighbor already holds it).
+# O[i] in Z_40 (mod 40, honoring your 39-symbol alphabet + sentinel-39 quirk):
+#   each frame O[i] += WEIGHT[T[i]]  (T gates a DIFFERENT step speed per phase --
+#   the "hybrid" part: ternary automaton driving an unrelated modulus).
+#   Hitting the sentinel value 39 snaps O[i] back to 0 next step (echoing
+#   takewhile's stop-at-39 behavior in your pixel decoder).
+# Display: threshold(O[i] > 19).
+G=15
+S1=[(1,1,0),(1,0,1),(0,1,1),(0,1,0),(0,0,1)]         # cyclic CA advance set
+T,NXT,TMP = 40,55,70
+O,OTMP,INIT = 71,86,87
+WEIGHT = [2,5,9]        # per-ternary-phase step, drawn from the spirit of S
+
+SEED_T=[0,0,1,1,2,0,0,0,1,2,2,0,1,0,2]
+prog=[]
+for i in range(G): prog += [('rie',INIT,0,f'ti{i}g'),('set',T+i,SEED_T[i],f'ti{i}')]
+prog += [('rie',INIT,0,'oinitg'),('set',INIT,1,'oinit')]  # O starts at 0 via the ROM's own RAM clear at boot; no cheat needed
+
+# --- ternary CA: default copy-through, then advance-on-neighbor (AND-gate, 3-valued) ---
+for i in range(G):
+    for v in range(3): prog += [('rie',T+i,v,f'nxdef{i}_{v}g'),('set',NXT+i,v,f'nxdef{i}_{v}')]
+for i in range(G):
+    L,R=(i-1)%G,(i+1)%G
+    for s in range(3):
+        t=(s+1)%3
+        others_s=[x for x in range(3) if x!=s]
+        others_t=[x for x in range(3) if x!=t]
+        for side,nbaddr in (('L',T+L),('R',T+R)):
+            tag=f'adv{i}_{s}_{side}'
+            prog.append(('set',TMP,1,f'{tag}_init'))
+            for w in others_s:
+                prog.append(('rie',T+i,w,f'{tag}_kis'))
+                prog.append(('set',TMP,0,f'{tag}_kis_do'))
+            for w in others_t:
+                prog.append(('rie',nbaddr,w,f'{tag}_kin'))
+                prog.append(('set',TMP,0,f'{tag}_kin_do'))
+            prog.append(('rie',TMP,1,f'{tag}_chk'))
+            prog.append(('set',NXT+i,t,f'{tag}_apply'))
+for i in range(G):
+    for v in range(3): prog += [('rie',NXT+i,v,f'cp{i}_{v}g'),('set',T+i,v,f'cp{i}_{v}')]
+
+# --- mod-40 orbit: O[i] += WEIGHT[T[i]] mod 40, sentinel reset at 39 ---
+for i in range(G):
+    for phase,w in enumerate(WEIGHT):
+        prog += [('rie',T+i,phase,f'ostep{i}_{phase}g'),('inc',O+i,w,f'ostep{i}_{phase}')]
+    prog += [('rig',O+i,39,f'owrap{i}g'),('dec',O+i,40,f'owrap{i}')]  # true modulus: >39 -> subtract 40
+    prog += [('rie',O+i,39,f'osent{i}g'),('set',O+i,0,f'osent{i}')]     # ==39 sentinel -> snap to 0
+
+# --- display: threshold(O[i] > 19) ---
+for i in range(G):
+    prog += [('set',i,0,f'dc{i}'),('rig',O+i,19,f'dt{i}'),('set',i,1,f'ds{i}')]
+
+T_={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for k,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{k}_address = "{a}"',f'cheat{k}_address_bit_position = "0"',
+          f'cheat{k}_big_endian = "false"',f'cheat{k}_cheat_type = "{T_[op]}"',
+          f'cheat{k}_code = ""',f'cheat{k}_desc = "{d}"',
+          f'cheat{k}_enable = "true"',f'cheat{k}_handler = "1"',
+          f'cheat{k}_memory_search_size = "3"',
+          f'cheat{k}_repeat_add_to_address = "1"',f'cheat{k}_repeat_add_to_value = "0"',
+          f'cheat{k}_repeat_count = "1"',f'cheat{k}_rumble_port = "0"',
+          f'cheat{k}_rumble_primary_duration = "0"',f'cheat{k}_rumble_primary_strength = "0"',
+          f'cheat{k}_rumble_secondary_duration = "0"',f'cheat{k}_rumble_secondary_strength = "0"',
+          f'cheat{k}_rumble_type = "0"',f'cheat{k}_rumble_value = "0"',
+          f'cheat{k}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('rule110_ternary40.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> rule110_ternary40.cht (types {sorted(set(op for op,_,_,_ in prog))})")
+=== reversible [[Dafne]] ===
+# SECOND-ORDER REVERSIBLE DAFNE ORBIT. The mod-27 Dafne stepping rule
+# (used throughout this session as seed + n*M) is only "forward" -- this
+# gives it the same second-order treatment as Rule 90 and the ternary CA:
+#     next[i] = (prev[i] + left[i] + right[i]) mod 27
+# using DAFNE letters as the seed instead of an arbitrary pattern.
+# Additive mod-27, so no discrete log needed (only multiplicative rules
+# require logs) -- reversibility comes from the same linear-inverse trick
+# as the ternary file, just one modulus bigger. set/inc/dec/rig/rie only.
+def L2n(c): return 26 if c=='0' else ord(c)-65
+def n2L(v): return '0' if v==26 else chr(65+v)
+SEED_S = [L2n(c) for c in "DAFNEABRDNFR0RF"]
+SEED_P = [0]*15
+G=15
+S,P,NX,INIT = 0x0550, 0x0570, 0x0590, 0x05B1
+prog=[]
+for i in range(G): prog += [('rie',INIT,0,f'si{i}g'),('set',S+i,SEED_S[i],f'si{i}')]
+for i in range(G): prog += [('rie',INIT,0,f'pi{i}g'),('set',P+i,SEED_P[i],f'pi{i}')]
+prog += [('rie',INIT,0,'idg'),('set',INIT,1,'id')]
+
+for i in range(G):
+    L,R=(i-1)%G,(i+1)%G
+    for v in range(27): prog += [('rie',P+i,v,f'cpP{i}_{v}g'),('set',NX+i,v,f'cpP{i}_{v}')]
+    for v in range(1,27):
+        prog += [('rie',S+L,v,f'addL{i}_{v}g'),('inc',NX+i,v,f'addL{i}_{v}')]
+    prog += [('rig',NX+i,26,f'modL{i}g'),('dec',NX+i,27,f'modL{i}')]
+    for v in range(1,27):
+        prog += [('rie',S+R,v,f'addR{i}_{v}g'),('inc',NX+i,v,f'addR{i}_{v}')]
+    prog += [('rig',NX+i,26,f'modR{i}g'),('dec',NX+i,27,f'modR{i}')]
+
+for i in range(G):
+    for v in range(27): prog += [('rie',S+i,v,f'pc{i}_{v}g'),('set',P+i,v,f'pc{i}_{v}')]
+for i in range(G):
+    for v in range(27): prog += [('rie',NX+i,v,f'sc{i}_{v}g'),('set',S+i,v,f'sc{i}_{v}')]
+
+# corruption: cell value > 13 -> rain (same threshold used throughout this session's Dafne work)
+for i in range(G):
+    prog += [('rig',S+i,13,f'rain_g{i}'),('inc',0x0200+4*i,1,f'rain_y{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_dafne_reversible.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> multicart_dafne_reversible.cht (under 6000: {len(prog)<6000})")
+
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='dec': mem[a]=(mem[a]-v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+        elif op=='rig': skip=not(mem[a]>v)
+mem=[0]*0x600
+s_ref=SEED_S[:]; p_ref=SEED_P[:]
+ok=True
+for f in range(300):
+    cheat_pass(mem)
+    nxt=[(p_ref[i]+s_ref[(i-1)%G]+s_ref[(i+1)%G])%27 for i in range(G)]
+    p_ref,s_ref = s_ref, nxt
+    if mem[S:S+G]!=s_ref or mem[P:P+G]!=p_ref:
+        ok=False; print(f"mismatch f{f}"); break
+print("second-order reversible Dafne orbit matches reference for 300 generations:", ok)
+
+def fwd(s,p,n):
+    for _ in range(n):
+        nxt=[(p[i]+s[(i-1)%G]+s[(i+1)%G])%27 for i in range(G)]
+        p,s=s,nxt
+    return s,p
+def back(s,p,n):
+    for _ in range(n):
+        prevS = p[:]
+        prevP = [(s[i]-p[(i-1)%G]-p[(i+1)%G])%27 for i in range(G)]
+        s,p = prevS, prevP
+    return s,p
+s0,p0 = SEED_S[:], SEED_P[:]
+s10,p10 = fwd(s0,p0,10)
+s_back,p_back = back(s10,p10,10)
+print("reversibility: backward 10 steps recovers DAFNE exactly:", s_back==s0 and p_back==p0)
+print("seed as letters:    ", ''.join(n2L(v) for v in s0))
+print("+10 steps, letters: ", ''.join(n2L(v) for v in s10))
+print("reversed, letters:  ", ''.join(n2L(v) for v in s_back))
+=== dicreete log automaton ===
+# DISCRETE-LOG MULTIPLICATIVE AUTOMATON. Second-order construction, mod-13
+# multiplicative group instead of XOR (mod 2) or addition (mod 3):
+#     next[i] = (prev[i] * left[i] * right[i]) mod 13
+# Cheats can't multiply, so this goes through a discrete log table:
+# log(a*b*c) = log(a)+log(b)+log(c) mod 12, computed by ADDITION, then
+# converted back via the antilog (exp) table. Genuinely invertible --
+# multiplication mod a prime is a group, so prev[i] = next[i] * inv(left[i])
+# * inv(right[i]) mod 13, same algebraic shape as the XOR/sum reversible
+# files but one level more abstract. set/inc/dec/rig/rie only. $0550 window.
+p = 13
+g = 2
+LOG = {1:0,2:1,3:4,4:2,5:9,6:5,7:11,8:3,9:8,10:10,11:7,12:6}
+EXP = [1,2,4,8,3,6,12,11,9,5,10,7]
+
+G = 15
+S,P,NX,L1,L2,L3,SUM,INIT = 0x0550,0x0560,0x0570,0x0580,0x0590,0x05A0,0x05B0,0x05C1
+# cells store values 1-12 (nonzero mod 13). Seed with a simple asymmetric pattern.
+SEED_S = [1,1,1,1,1,1,1,2,1,1,1,1,1,1,1]   # a single "2" seed in an otherwise-identity field
+SEED_P = [1]*15
+
+prog=[]
+for i in range(G): prog += [('rie',INIT,0,f'si{i}g'),('set',S+i,SEED_S[i],f'si{i}')]
+for i in range(G): prog += [('rie',INIT,0,f'pi{i}g'),('set',P+i,SEED_P[i],f'pi{i}')]
+prog += [('rie',INIT,0,'idg'),('set',INIT,1,'id')]
+
+for i in range(G):
+    L,R=(i-1)%G,(i+1)%G
+    # L1 := log(P[i]),  L2 := log(S[L]),  L3 := log(S[R])   (12-way lookups)
+    for v in range(1,13):
+        prog += [('rie',P+i,v,f'lg1_{i}_{v}g'),('set',L1+i,LOG[v],f'lg1_{i}_{v}')]
+    for v in range(1,13):
+        prog += [('rie',S+L,v,f'lg2_{i}_{v}g'),('set',L2+i,LOG[v],f'lg2_{i}_{v}')]
+    for v in range(1,13):
+        prog += [('rie',S+R,v,f'lg3_{i}_{v}g'),('set',L3+i,LOG[v],f'lg3_{i}_{v}')]
+    # SUM[i] := L1[i]  (copy, 12-way -- log values are 0-11)
+    for v in range(12):
+        prog += [('rie',L1+i,v,f'sc_{i}_{v}g'),('set',SUM+i,v,f'sc_{i}_{v}')]
+    # SUM[i] += L2[i] mod 12  (gated add by L2's actual value, then correct)
+    for v in range(1,12):
+        prog += [('rie',L2+i,v,f'a2_{i}_{v}g'),('inc',SUM+i,v,f'a2_{i}_{v}')]
+    prog += [('rig',SUM+i,11,f'm2_{i}g'),('dec',SUM+i,12,f'm2_{i}')]
+    # SUM[i] += L3[i] mod 12
+    for v in range(1,12):
+        prog += [('rie',L3+i,v,f'a3_{i}_{v}g'),('inc',SUM+i,v,f'a3_{i}_{v}')]
+    prog += [('rig',SUM+i,11,f'm3_{i}g'),('dec',SUM+i,12,f'm3_{i}')]
+    # NX[i] := exp(SUM[i])  (12-way antilog lookup)
+    for v in range(12):
+        prog += [('rie',SUM+i,v,f'exp_{i}_{v}g'),('set',NX+i,EXP[v],f'exp_{i}_{v}')]
+
+# P := S ; S := NX (13-way copies, values 1-12)
+for i in range(G):
+    for v in range(1,13): prog += [('rie',S+i,v,f'pc{i}_{v}g'),('set',P+i,v,f'pc{i}_{v}')]
+for i in range(G):
+    for v in range(1,13): prog += [('rie',NX+i,v,f'sc2{i}_{v}g'),('set',S+i,v,f'sc2{i}_{v}')]
+
+# corruption: value>6 -> rain, value<=6 (and !=1, i.e. genuinely perturbed) -> flicker
+for i in range(G):
+    prog += [('rig',S+i,6,f'rain_g{i}'),('inc',0x0200+4*i,1,f'rain_y{i}')]
+
+T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+A=[]
+for i,(op,a,v,d) in enumerate(prog):
+    A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+          f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+          f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+          f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+          f'cheat{i}_memory_search_size = "3"',
+          f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+          f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+          f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+          f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+          f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+          f'cheat{i}_value = "{v}"']
+A.append(f'cheats = "{len(prog)}"')
+open('multicart_dlog.cht','w').write('\n'.join(A))
+print(f"{len(prog)} cheats -> multicart_dlog.cht (under 6000: {len(prog)<6000})")
+
+def cheat_pass(mem):
+    skip=False
+    for op,a,v,_ in prog:
+        if skip: skip=False; continue
+        if op=='set': mem[a]=v
+        elif op=='inc': mem[a]=(mem[a]+v)&0xFF
+        elif op=='dec': mem[a]=(mem[a]-v)&0xFF
+        elif op=='rie': skip=(mem[a]!=v)
+        elif op=='rig': skip=not(mem[a]>v)
+mem=[0]*0x600
+s_ref=SEED_S[:]; p_ref=SEED_P[:]
+ok=True
+for f in range(200):
+    cheat_pass(mem)
+    nxt=[(p_ref[i]*s_ref[(i-1)%G]*s_ref[(i+1)%G])%13 for i in range(G)]
+    p_ref,s_ref = s_ref, nxt
+    if mem[S:S+G]!=s_ref or mem[P:P+G]!=p_ref:
+        ok=False; print(f"mismatch f{f}: got {mem[S:S+G]} want {s_ref}"); break
+print("discrete-log multiplicative automaton matches reference for 200 generations:", ok)
+
+def fwd(s,p,n):
+    for _ in range(n):
+        nxt=[(p[i]*s[(i-1)%G]*s[(i+1)%G])%13 for i in range(G)]
+        p,s=s,nxt
+    return s,p
+def back(s,p,n):
+    for _ in range(n):
+        prevS = p[:]
+        invL = [pow(x,-1,13) for x in p]
+        prevP = [(s[i]*invL[(i-1)%G]*invL[(i+1)%G])%13 for i in range(G)]
+        s,p = prevS, prevP
+    return s,p
+s0,p0 = SEED_S[:], SEED_P[:]
+s10,p10 = fwd(s0,p0,10)
+s_back,p_back = back(s10,p10,10)
+print("group-inverse reversibility: backward 10 steps recovers the seed exactly:",
+      s_back==s0 and p_back==p0)
+mem2=[0]*0x600; hist=[SEED_S[:]]
+for f in range(15): cheat_pass(mem2); hist.append(mem2[S:S+G])
+for row in hist: print(' '.join(f'{v:2d}' for v in row))
+===triple-modular redudnancy guard=== ''note:'' barely works lol
+"""
+TRIPLE MODULAR REDUNDANCY GUARD -- a self-healing block for any binary
+(0/1) flag that's supposed to stay constant after initialization (init
+flags, "seeded" markers, mode switches). Keeps three independent copies;
+every frame, takes a majority vote and (a) overwrites any copy that
+disagrees with the majority, and (b) writes the majority back into the
+live/exposed address. If ONE of {live, C1, C2, C3} gets corrupted by a
+stray write -- from another cheat, a game bug, RAM instability -- it
+self-heals within a single frame. Classic TMR limitation, stated
+honestly: if two or more of the four disagree simultaneously, the
+"majority" can heal to the WRONG value. This guards against single-point
+corruption, not coordinated multi-point corruption.
+set/rie only.
+"""
+
+def tmr_guard(LIVE, C1, C2, C3, INIT, MAJ, healthy_value, tag):
+    # MAJ must be a distinct scratch address -- not LIVE/C1/C2/C3/INIT.
+    assert len({LIVE,C1,C2,C3,INIT,MAJ}) == 6, "address collision in tmr_guard!"
+    prog = []
+    # one-time seed: all four start at the known-good value
+    prog += [('rie',INIT,0,f'{tag}_ig'),('set',LIVE,healthy_value,f'{tag}_il'),
+              ('rie',INIT,0,f'{tag}_i1g'),('set',C1,healthy_value,f'{tag}_i1'),
+              ('rie',INIT,0,f'{tag}_i2g'),('set',C2,healthy_value,f'{tag}_i2'),
+              ('rie',INIT,0,f'{tag}_i3g'),('set',C3,healthy_value,f'{tag}_i3'),
+              ('set',INIT,1,f'{tag}_idone')]
+    # majority(C1,C2,C3) for binary values: MAJ=1 iff at least 2 of 3 are 1.
+    # Each pair-check is a proper AND-gate (default true, kill on mismatch) --
+    # chaining two bare rie's does NOT give AND: skipping the first rie also
+    # skips the second rie itself, letting the action underneath fire
+    # ungated. (Caught this exact mistake once already this session.)
+    GTMP = MAJ + 1
+    prog.append(('set', MAJ, 0, f'{tag}_maj_clear'))
+    for (a,b) in [(C1,C2),(C1,C3),(C2,C3)]:
+        prog.append(('set', GTMP, 1, f'{tag}_pair_{a}_{b}_init'))
+        prog += [('rie',a,0,f'{tag}_pair_{a}_{b}_ka'),('set',GTMP,0,f'{tag}_pair_{a}_{b}_kad')]
+        prog += [('rie',b,0,f'{tag}_pair_{a}_{b}_kb'),('set',GTMP,0,f'{tag}_pair_{a}_{b}_kbd')]
+        prog += [('rie',GTMP,1,f'{tag}_pair_{a}_{b}_chk'),('set',MAJ,1,f'{tag}_pair_{a}_{b}_set')]
+    # heal any copy that disagrees with the majority, and refresh LIVE
+    for addr in (LIVE, C1, C2, C3):
+        prog += [('rie',MAJ,0,f'{tag}_h0_{addr}'),('set',addr,0,f'{tag}_h0s_{addr}')]
+        prog += [('rie',MAJ,1,f'{tag}_h1_{addr}'),('set',addr,1,f'{tag}_h1s_{addr}')]
+    return prog
+
+if __name__ == '__main__':
+    # Demonstration: guard the shared init flag pattern that caused the
+    # duet bug and the disagreement-slicer bug earlier this session.
+    LIVE, C1, C2, C3, INIT, MAJ = 0x0700, 0x0701, 0x0702, 0x0703, 0x0704, 0x0705  # note: tmr_guard now also uses MAJ+1 as scratch
+    prog = tmr_guard(LIVE, C1, C2, C3, INIT, MAJ, healthy_value=1, tag='guard')
+
+    T={'set':'1','inc':'2','dec':'3','rie':'4','rne':'5','ril':'6','rig':'7'}
+    A=[]
+    for i,(op,a,v,d) in enumerate(prog):
+        A += [f'cheat{i}_address = "{a}"',f'cheat{i}_address_bit_position = "0"',
+              f'cheat{i}_big_endian = "false"',f'cheat{i}_cheat_type = "{T[op]}"',
+              f'cheat{i}_code = ""',f'cheat{i}_desc = "{d}"',
+              f'cheat{i}_enable = "true"',f'cheat{i}_handler = "1"',
+              f'cheat{i}_memory_search_size = "3"',
+              f'cheat{i}_repeat_add_to_address = "1"',f'cheat{i}_repeat_add_to_value = "0"',
+              f'cheat{i}_repeat_count = "1"',f'cheat{i}_rumble_port = "0"',
+              f'cheat{i}_rumble_primary_duration = "0"',f'cheat{i}_rumble_primary_strength = "0"',
+              f'cheat{i}_rumble_secondary_duration = "0"',f'cheat{i}_rumble_secondary_strength = "0"',
+              f'cheat{i}_rumble_type = "0"',f'cheat{i}_rumble_value = "0"',
+              f'cheat{i}_value = "{v}"']
+    A.append(f'cheats = "{len(prog)}"')
+    open('tmr_guard_example.cht','w').write('\n'.join(A))
+    print(f"{len(prog)} cheats -> tmr_guard_example.cht")
+
+    # ---- verify: does it actually heal an injected corruption? ----
+    def cheat_pass(mem):
+        skip=False
+        for op,a,v,_ in prog:
+            if skip: skip=False; continue
+            if op=='set': mem[a]=v
+            elif op=='rie': skip=(mem[a]!=v)
+    mem=[0]*0x800
+    ok=True
+    for f in range(10):
+        cheat_pass(mem)
+        if (mem[LIVE],mem[C1],mem[C2],mem[C3]) != (1,1,1,1):
+            ok=False; print(f"unexpected state at frame {f}"); break
+    print("all four copies settle to healthy_value=1 after init:", ok)
+
+    # inject corruption: a stray write clobbers ONE copy mid-run
+    print("\n--- injecting corruption: C2 gets clobbered to 0 ---")
+    mem[C2] = 0
+    print(f"immediately after corruption: LIVE={mem[LIVE]} C1={mem[C1]} C2={mem[C2]} C3={mem[C3]}")
+    cheat_pass(mem)
+    print(f"after ONE guard pass:         LIVE={mem[LIVE]} C1={mem[C1]} C2={mem[C2]} C3={mem[C3]}")
+    healed = (mem[LIVE],mem[C1],mem[C2],mem[C3]) == (1,1,1,1)
+    print("fully healed in a single frame:", healed)
+
+    # also corrupt LIVE directly (simulating another cheat/game bug clobbering it)
+    print("\n--- injecting corruption: LIVE gets clobbered to 0 (e.g. by another buggy cheat) ---")
+    mem[LIVE] = 0
+    print(f"immediately after corruption:  LIVE={mem[LIVE]} C1={mem[C1]} C2={mem[C2]} C3={mem[C3]}")
+    cheat_pass(mem)
+    print(f"after ONE guard pass:          LIVE={mem[LIVE]} C1={mem[C1]} C2={mem[C2]} C3={mem[C3]}")
+    healed2 = (mem[LIVE],mem[C1],mem[C2],mem[C3]) == (1,1,1,1)
+    print("LIVE address itself healed:", healed2)
+
+    # honest failure case: TWO copies corrupted simultaneously
+    print("\n--- honest limitation: corrupt TWO of four simultaneously ---")
+    mem[C1]=0; mem[LIVE]=0
+    cheat_pass(mem)
+    print(f"after guard pass: LIVE={mem[LIVE]} C1={mem[C1]} C2={mem[C2]} C3={mem[C3]}")
+    print("(majority now sees two 0s and two 1s among C1,C2,C3 -- demonstrates the honest limit)")
+having a few ways to go can be helpful to unbreak states etc
