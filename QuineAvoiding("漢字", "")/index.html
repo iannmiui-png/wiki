@@ -59,7 +59,10 @@ RLSTATE={"site.styles":"ready","user.styles":"ready","user":"ready","user.option
 <p>If the program is exactly "漢字" (without the quotes), the output is "漢字". Otherwise, the output is "". However unicode strings are not allowed, instead the input must be in the form of strokes, (such as those described by an SVG file.) 
 </p>
 <h1><span class="mw-headline" id="Example">Example</span></h1>
-<p>Not allowed.
+<body style="margin:0;background:#fff"><svg id=s xmlns="http://www.w3.org/2000/svg" viewBox="423 -32.1 1806 625.1" fill="#990000" style="width:100%"></svg>
+<script>H=(t,e=[[755,-11,1.168],[1370,-35,1.095]])=>{let h,l="",r=0,o=atob(t),s=[];for(h=0;h<o.length;h++)l+=(o.charCodeAt(h)+256).toString(2).slice(1);let p=t=>parseInt(l.substr(r,t),2,r+=t);for(let t=0;t<2;t++){let[l,r,o]=e[t],a=p(5);for(;a--;){let t,e=p(3),a=[],f=[];for(t=0;t<e;t++)a.push([4*p(7)*o+l,4*p(7)*o+r]);for(t=0;t<4;t++)f.push(3.5*p(3)*o);let i=e>2?[[2*a[0][0]-a[1][0],2*a[0][1]-a[1][1]],...a,[2*a[e-1][0]-a[e-2][0],2*a[e-1][1]-a[e-2][1]]]:0,n=[];if(i)for(h=0;h<i.length-3;h++){let[e,l,r,o]=i.slice(h,h+4);for(t=0;t<14;t++){let h=t/13;n.push([0,1].map(t=>.5*(2*l[t]+(r[t]-e[t])*h+(2*e[t]-5*l[t]+4*r[t]-o[t])*h*h+(3*l[t]-e[t]-3*r[t]+o[t])*h**3)))}}else for(t=0;t<14;t++)n.push([0,1].map(e=>a[0][e]+(a[1][e]-a[0][e])*t/13));let u=n.length-1,m=[],M=[];n.map(([t,e],h)=>{let l=h/u*3,r=Math.min(0|l,2),o=f[r]+(f[r+1]-f[r])*(l-r),[s,p]=n[Math.max(0,h-1)],[a,i]=n[Math.min(u,h+1)],g=a-s,c=i-p,d=Math.hypot(g,c)||1;m.push([t-c/d*o,e+g/d*o]),M.push([t+c/d*o,e-g/d*o])}),s.push("M"+[...m,...M.reverse()].map(t=>t[0].toFixed(1)+" "+t[1].toFixed(1)).join("L")+"Z")}}return s};
+s.innerHTML=H("tZDiPZwcM3P11k6aKEPzkeadd6V9VSfWk1oVtRyXzlE40Qq0ETNk0Il5/mZ8EfaRqTrkSwttIrMbNisJjO8wvs9DSqN0hNghUUuSNuPfloK1xtUjO81JE6TRs3YOok1ekv5ibjrpY6t8qbjeB3OfwIEajjqJLKTJckVKAzhRJqjMazo0mGYEXBSCro1zVo4cR1I2TKHjqNIrosK64/skQfGU0qbqo2WWmwo2SJzjlyZ9AlMpa+SrYMVDBVrOg8EbAMPjaY+cPuKWJBjYomyBxf+pLa9LQjWAxjObD8UbPGD6EuwMtS/XG5lzty6gPok9Nx5i+E/ZT6sqOvpsNrA=").map(d=>'<path d="'+d+'"/>').join('')
+</script>
 </p>
 <h2><span class="mw-headline" id="Interpreter">Interpreter</span></h2>
 <pre>import base64, sys
