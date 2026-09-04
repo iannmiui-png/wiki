@@ -1,0 +1,50 @@
+/* pgm-tooltip.css -- preview chrome only; leaves your page styles alone. */
+
+.pgm-src {
+  cursor: help;
+  text-decoration: underline dotted rgba(17, 255, 17, 0.5);
+  text-underline-offset: 3px;
+}
+.pgm-src:focus-visible {
+  outline: 1px solid #11ff11;
+  outline-offset: 2px;
+}
+
+.pgm-tip {
+  position: fixed;
+  z-index: 9999;
+  display: none;
+  padding: 6px;
+  background: #0a0a0a;
+  border: 1px solid #11ff11;
+  box-shadow: 0 0 0 1px #000, 0 8px 24px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+.pgm-tip canvas {
+  display: block;
+  image-rendering: pixelated;
+  background:
+    conic-gradient(#1a1a1a 90deg, #141414 0 180deg, #1a1a1a 0 270deg, #141414 0)
+    0 0 / 12px 12px;   /* faint checker so pure-black rasters are still visible */
+}
+.pgm-tip__meta {
+  margin-top: 5px;
+  font: 11px/1.3 ui-monospace, "SF Mono", Consolas, "DejaVu Sans Mono", monospace;
+  letter-spacing: 0.02em;
+  color: #11ff11;
+  text-align: center;
+}
+.pgm-tip--err {
+  max-width: 260px;
+  border-color: #ff5555;
+  color: #ff8888;
+  font: 12px/1.4 ui-monospace, Consolas, monospace;
+  white-space: normal;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pgm-tip { animation: pgm-tip-in 90ms ease-out; }
+  @keyframes pgm-tip-in { from { opacity: 0; } to { opacity: 1; } }
+}
