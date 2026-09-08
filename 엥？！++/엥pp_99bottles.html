@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/><title>엥?++ interpreter — hand-drawn edition</title></head>
+<body><center>
+<h1>엥?++ interpreter — hand-drawn edition</h1>
+<p style="max-width:46em;font-family:sans-serif;font-size:0.92em;text-align:left">
+엥?++ is based on <a href="https://esolangs.org/wiki/%E5%95%8A%EF%BC%81">啊！</a>, but higher level —
+and in this dialect the symbol <b>엥</b> is not a character you can type. It has to be
+<b>drawn</b>, stroke by stroke, in the pad below, the same way
+<a href="https://esolangs.org/wiki/QuineAvoiding(%22%E6%BC%A2%E5%AD%97%22,_%22%22)">QuineAvoiding("漢字","")</a>
+only accepts its input as strokes. Draw all six strokes of 엥 (trace the faint guide,
+in order: ㅇ → the ㅓ spine → its two arms → ㅣ → ㅇ), click <i>Validate &amp; insert</i>,
+and — if it passes — a little ✏엥 token appears in the code below. That token, and only
+that token, compiles as a real 엥 symbol. If you type the literal character 엥 into the
+code by hand, the compiler will refuse it.
+</p>
+
+<div id="padwrap" style="display:inline-block;text-align:left;font-family:sans-serif;font-size:0.85em">
+  <svg id="pad" viewBox="0 0 100 100" width="260" height="260" style="background:#111;border:1px solid #555;touch-action:none;cursor:crosshair">
+    <g id="guide" stroke="#77DDFF" stroke-width="1.2" fill="none" opacity="0.35"></g>
+    <g id="userstrokes" stroke="#FF77AA" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></g>
+  </svg>
+  <br>
+  <button onclick="padClear()">Clear</button>
+  <button onclick="padUndo()">Undo stroke</button>
+  <button onclick="padValidate()">Validate &amp; insert</button>
+  &nbsp; strokes drawn: <span id="strokecount">0</span>/6
+  &nbsp;&nbsp; glyphs drawn this session: <b id="drawncount">0</b>
+  <div id="padmsg" style="min-height:1.4em;color:#c33"></div>
+</div>
+
+<br><br>
+<table id="ops"><tr><th>cmd</th><th>meaning</th><th>cmd</th><th>meaning</th></tr>
+<tr><td>엥.엥?</td><td>pointer right</td><td>엥.엥~[v]</td><td>set cell to v</td></tr>
+<tr><td>엥?엥.</td><td>pointer left</td><td>엥~엥.</td><td>reset cell</td></tr>
+<tr><td>엥.엥.</td><td>increase cell</td><td>엥~엥~</td><td>print cell as integer</td></tr>
+<tr><td>엥!엥!</td><td>decrease cell</td><td>엥,엥,</td><td>read integer</td></tr>
+<tr><td>엥.엥!</td><td>read character</td><td>엥,엥.[v]</td><td>print character v</td></tr>
+<tr><td>엥!엥.</td><td>print cell as character</td><td>엥,엥![s]</td><td>print s</td></tr>
+<tr><td>엥!엥?</td><td>jump past matching 엥?엥! if cell is zero</td><td>엥,엥~{...}</td><td>do the block if cell is non-zero</td></tr>
+<tr><td>엥?엥!</td><td>jump back if cell is non-zero</td><td>엥~엥![n]</td><td>label, until 엥!엥~</td></tr>
+<tr><td>엥?엥?</td><td>wait one second</td><td>엥~엥?[n]</td><td>jump to label</td></tr>
+<tr><td>엥?엥~</td><td>kill program</td><td>ㅋㅋ</td><td>nope (no-op)</td></tr>
+<tr><td colspan="4">every 엥 above must be a hand-drawn glyph (✏엥 token) — not the typed character — or the compiler rejects it</td></tr>
+</table><br>
+
+<p style="font-family:sans-serif;font-size:0.85em">
+This 99 Bottles program is exactly the classic 啊！++ 99 Bottles, mechanically
+translated into 엥?++ syntax — every original 啊 became one drawn-glyph token
+(the page pre-draws all 148 of them for you at load, the same validator the pad
+uses, so the demo runs immediately; try deleting a token and retyping a bare 엥
+by hand to see it get rejected).
+</p>
+<textarea rows="15" cols="70" id="code">
+✏엥.✏엥~[99]
+✏엥!✏엥?
+  ✏엥~✏엥~✏엥.✏엥?✏엥~✏엥.✏엥?✏엥.✏엥!✏엥!✏엥,✏엥~{✏엥.✏엥?✏엥.✏엥.✏엥?✏엥.}✏엥.✏엥.✏엥,✏엥![ bottle]✏엥.✏엥?✏엥,✏엥~{✏엥,✏엥![s]}✏엥?✏엥.
+  ✏엥,✏엥![ of beer on the wall, ]
+  ✏엥~✏엥~✏엥.✏엥?✏엥~✏엥.✏엥?✏엥.✏엥!✏엥!✏엥,✏엥~{✏엥.✏엥?✏엥.✏엥.✏엥?✏엥.}✏엥.✏엥.✏엥,✏엥![ bottle]✏엥.✏엥?✏엥,✏엥~{✏엥,✏엥![s]}✏엥?✏엥.
+  ✏엥,✏엥![ of beer.]✏엥,✏엥.[10]
+  ✏엥,✏엥![Take one down and pass it around, ]
+  ✏엥!✏엥!
+  ✏엥.✏엥?✏엥.✏엥~[1]✏엥?✏엥.✏엥,✏엥~{✏엥.✏엥?✏엥~✏엥.✏엥?✏엥.}✏엥,✏엥~{✏엥~✏엥~}✏엥.✏엥?✏엥,✏엥~{✏엥,✏엥![no more]}✏엥?✏엥.
+  ✏엥.✏엥?✏엥~✏엥.✏엥?✏엥.✏엥!✏엥!✏엥,✏엥~{✏엥.✏엥?✏엥.✏엥.✏엥?✏엥.}✏엥.✏엥.✏엥,✏엥![ bottle]✏엥.✏엥?✏엥,✏엥~{✏엥,✏엥![s]}✏엥?✏엥.
+  ✏엥,✏엥![ of beer on the wall.]✏엥,✏엥.[10]✏엥,✏엥.[10]
+✏엥?✏엥!
+✏엥,✏엥![No more bottles of beer on the wall, no more bottles of beer.]✏엥,✏엥.[10]
+✏엥,✏엥![Go to the store and buy some more, 99 bottles of beer on the wall.]✏엥,✏엥.[10]✏엥,✏엥.[10]
+✏엥?✏엥~
+</textarea><br>
+        <div id="workspace">&nbsp;</div><br>
+        <button onclick="init()">Update</button>
+        <button onclick="do_run()">Run</button>
+        <button onclick="do_step()">Step</button>
+        <input type="text" id="stepsize" size="6" value="1">
+        &nbsp;&nbsp;STDIN <input type="text" id="stdin" size="14" value="">
+        <br><br>
+        <div id="output"></div><br>
+<style>
+td {vertical-align:top} th {text-align:left} #output div {margin-left:1em;font-family:monospace} #output {color:#EAEAEA;background:#111111;font-family:monospace;padding:0em 0.2em;white-space:pre-wrap;text-align:left;max-width:70em;min-height:2em}
+td {vertical-align:top} th {text-align:left} #workspace div {margin-left:1em;font-family:monospace} #workspace {color:white;background:#111111;font-family:monospace;padding:0.3em 0.2em;text-align:left;max-width:70em;white-space:pre-wrap}
+#workspace b {color:#FF77AA} #workspace i {color:#77DDFF;font-style:normal}
+#ops {border-collapse:collapse;font-size:0.85em;text-align:left}
+#ops td, #ops th {border:1px solid #999;padding:0.1em 0.5em}
+#code {font-family:monospace}
+</style>
+<script>
+// ===================== stroke-glyph validator =====================
+// Port of the reference-glyph check: a 엥 must be drawn as six strokes
+// (ㅇ, the ㅓ spine, its two arms, ㅣ, ㅇ) that — after arc-length
+// resampling and normalizing away position/scale — are close to the
+// official reference shape.
+var Glyph = (function () {
+  function circlePts(cx, cy, r, n) {
+    n = n || 20;
+    var pts = [];
+    for (var i = 0; i <= n; i++) {
+      var t = 2 * Math.PI * i / n;
+      pts.push([cx + r * Math.cos(t), cy + r * Math.sin(t)]);
+    }
+    return pts;
+  }
+  function referenceStrokes() {
+    return [
+      circlePts(22, 30, 16),
+      [[50, 8], [50, 55]],
+      [[50, 18], [66, 12]],
+      [[50, 38], [66, 32]],
+      [[78, 8], [78, 55]],
+      circlePts(50, 84, 20)
+    ];
+  }
+  function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+  function resample(points, n) {
+    n = n || 24;
+    if (points.length === 1) points = [points[0], points[0]];
+    var segLens = [], total = 0;
+    for (var i = 0; i < points.length - 1; i++) {
+      var d = dist(points[i], points[i + 1]);
+      segLens.push(d); total += d;
+    }
+    if (total === 0) { var out0 = []; for (var k=0;k<n;k++) out0.push(points[0]); return out0; }
+    var out = [points[0]], step = total / (n - 1), acc = 0, j = 0;
+    for (var kk = 1; kk < n; kk++) {
+      var target = kk * step;
+      while (j < segLens.length && acc + segLens[j] < target) { acc += segLens[j]; j++; }
+      if (j >= segLens.length) { out.push(points[points.length - 1]); continue; }
+      var remain = target - acc;
+      var frac = segLens[j] > 0 ? remain / segLens[j] : 0;
+      var x = points[j][0] + (points[j+1][0]-points[j][0]) * frac;
+      var y = points[j][1] + (points[j+1][1]-points[j][1]) * frac;
+      out.push([x, y]);
+    }
+    return out;
+  }
+  function normalizeAll(strokes) {
+    var xs = [], ys = [];
+    strokes.forEach(function (s) { s.forEach(function (p) { xs.push(p[0]); ys.push(p[1]); }); });
+    var cx = xs.reduce(function(a,b){return a+b;},0) / xs.length;
+    var cy = ys.reduce(function(a,b){return a+b;},0) / ys.length;
+    var minx = Math.min.apply(null, xs), maxx = Math.max.apply(null, xs);
+    var miny = Math.min.apply(null, ys), maxy = Math.max.apply(null, ys);
+    var diag = Math.hypot(maxx - minx, maxy - miny) || 1;
+    return strokes.map(function (s) {
+      return s.map(function (p) { return [(p[0]-cx)/diag, (p[1]-cy)/diag]; });
+    });
+  }
+  var REF = referenceStrokes();
+  var REF_RESAMPLED = REF.map(function (s) { return resample(s, 24); });
+  var REF_NORM = normalizeAll(REF_RESAMPLED);
+  var THRESHOLD = 0.16; // looser than the "official" spec check, mouse input is sloppy
+
+  function check(userStrokes) {
+    if (userStrokes.length !== REF_NORM.length) {
+      return { ok: false, reason: "need exactly " + REF_NORM.length + " strokes (drew " + userStrokes.length + ")" };
+    }
+    var resampled = userStrokes.map(function (s) { return resample(s, 24); });
+    var norm = normalizeAll(resampled);
+    var sq = 0, count = 0;
+    for (var si = 0; si < REF_NORM.length; si++) {
+      for (var pi = 0; pi < REF_NORM[si].length; pi++) {
+        var dx = REF_NORM[si][pi][0] - norm[si][pi][0];
+        var dy = REF_NORM[si][pi][1] - norm[si][pi][1];
+        sq += dx*dx + dy*dy; count++;
+      }
+    }
+    var rmse = Math.sqrt(sq / count);
+    return { ok: rmse < THRESHOLD, rmse: rmse };
+  }
+  return { referenceStrokes: referenceStrokes, resample: resample, check: check, THRESHOLD: THRESHOLD };
+})();
+
+// ===================== drawing pad =====================
+var MARK = "\u270F\uC5E5"; // pen emoji + 엥 : the only token the compiler accepts as a real 엥
+var totalDrawnGlyphs = 0;
+var padStrokes = [];      // completed strokes this glyph, each an array of [x,y]
+var curStroke = null;
+var padSVG = document.getElementById("pad");
+var guideG = document.getElementById("guide");
+var userG = document.getElementById("userstrokes");
+
+(function drawGuide() {
+  Glyph.referenceStrokes().forEach(function (s, idx) {
+    var d = "M " + s.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L ");
+    var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d);
+    guideG.appendChild(p);
+    var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", s[0][0] - 4); t.setAttribute("y", s[0][1] - 4);
+    t.setAttribute("fill", "#77DDFF"); t.setAttribute("font-size", "6");
+    t.textContent = String(idx + 1);
+    guideG.appendChild(t);
+  });
+})();
+
+function svgPoint(evt) {
+  var pt = padSVG.createSVGPoint();
+  pt.x = evt.clientX; pt.y = evt.clientY;
+  var m = padSVG.getScreenCTM().inverse();
+  var p = pt.matrixTransform(m);
+  return [p.x, p.y];
+}
+function redrawUser() {
+  userG.innerHTML = "";
+  padStrokes.forEach(function (s) { appendStrokePath(s); });
+  document.getElementById("strokecount").textContent = padStrokes.length;
+}
+function appendStrokePath(s) {
+  if (s.length < 2) return;
+  var d = "M " + s.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L ");
+  var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  p.setAttribute("d", d);
+  userG.appendChild(p);
+}
+padSVG.addEventListener("pointerdown", function (e) {
+  curStroke = [svgPoint(e)];
+  padSVG.setPointerCapture(e.pointerId);
+});
+padSVG.addEventListener("pointermove", function (e) {
+  if (!curStroke) return;
+  curStroke.push(svgPoint(e));
+  redrawUser();
+  appendStrokePath(curStroke);
+});
+padSVG.addEventListener("pointerup", function () {
+  if (curStroke && curStroke.length > 1) padStrokes.push(curStroke);
+  curStroke = null;
+  redrawUser();
+});
+function padClear() { padStrokes = []; curStroke = null; redrawUser(); document.getElementById("padmsg").textContent = ""; }
+function padUndo() { padStrokes.pop(); redrawUser(); }
+function padValidate() {
+  var res = Glyph.check(padStrokes);
+  var msg = document.getElementById("padmsg");
+  if (!res.ok) {
+    msg.style.color = "#c33";
+    msg.textContent = res.reason ? ("not quite 엥 — " + res.reason) :
+      ("not quite 엥 — shape error " + res.rmse.toFixed(3) + " (need < " + Glyph.THRESHOLD + "), try again");
+    return;
+  }
+  totalDrawnGlyphs++;
+  document.getElementById("drawncount").textContent = totalDrawnGlyphs;
+  msg.style.color = "#5a5";
+  msg.textContent = "matched (shape error " + res.rmse.toFixed(3) + ") — inserted!";
+  insertAtCursor(document.getElementById("code"), MARK);
+  padClear();
+}
+function insertAtCursor(el, text) {
+  var start = el.selectionStart, end = el.selectionEnd;
+  el.value = el.value.slice(0, start) + text + el.value.slice(end);
+  el.selectionStart = el.selectionEnd = start + text.length;
+  el.focus();
+}
+
+// bootstrap: the demo program ships with its 148 엥 already "drawn" —
+// generated through this exact same validator, not just a hardcoded number.
+(function bootstrapDemoGlyphs() {
+  var need = (document.getElementById("code").value.match(
+      new RegExp(MARK.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
+  var ref = Glyph.referenceStrokes();
+  for (var k = 0; k < need; k++) {
+    var res = Glyph.check(ref); // the pristine reference always validates
+    if (res.ok) totalDrawnGlyphs++;
+  }
+  document.getElementById("drawncount").textContent = totalDrawnGlyphs;
+})();
+
+// ===================== 엥?++ : compiler + VM =====================
+var AH = (function () {
+  var PUNCT = ".?!,~";
+
+  function isSpace(c) { return c === " " || c === "\t" || c === "\n" || c === "\r"; }
+
+  function compile(src) {
+    var prog = [], stack = [], labels = {}, i = 0, err = null;
+    var budget = totalDrawnGlyphs;
+
+    function fail(msg, at) { if (!err) err = { msg: msg, at: at }; }
+    function skipSpace() { while (i < src.length && isSpace(src[i])) i++; }
+
+    function readSym() {
+      skipSpace();
+      if (i >= src.length) return null;
+      if (src.startsWith(MARK, i)) {
+        budget--;
+        if (budget < 0) {
+          fail("this program uses more 엥 than you've drawn (" + totalDrawnGlyphs +
+               ") — draw " + (-budget) + " more in the pad above", i);
+          return null;
+        }
+        i += MARK.length;
+        skipSpace();
+        if (i >= src.length || PUNCT.indexOf(src[i]) < 0) { fail("stray drawn 엥 (no modifier follows)", i); return null; }
+        return src[i++];
+      }
+      if (src[i] === "\uC5E5") {
+        fail("found a typed 엥 — this dialect does not accept typed 엥, only hand-drawn strokes (use the pad above)", i);
+        return null;
+      }
+      fail("expected a drawn 엥 glyph (" + MARK + "), found '" + src[i] + "'", i);
+      return null;
+    }
+
+    function readArg(open, close) {
+      skipSpace();
+      if (src[i] !== open) { fail("expected '" + open + "'", i); return null; }
+      i++;
+      var s = "";
+      while (i < src.length && src[i] !== close) s += src[i++];
+      if (src[i] !== close) { fail("missing '" + close + "'", i); return null; }
+      i++;
+      return s;
+    }
+
+    while (i < src.length && !err) {
+      skipSpace();
+      if (i >= src.length) break;
+      if (src[i] === "}") {
+        i++;
+        var t = stack.pop();
+        if (!t || t.kind !== "block") { fail("unmatched '}'", i - 1); break; }
+        prog[t.at].target = prog.length;
+        continue;
+      }
+      if (src[i] === "\u314b" && src[i+1] === "\u314b") { // ㅋㅋ
+        prog.push({ op: "nop", at: i });
+        i += 2;
+        continue;
+      }
+      var at = i;
+      var a = readSym(), b = readSym();
+      if (err) break;
+      if (a === null || b === null) { fail("program ended mid-command", at); break; }
+      var c = a + b, arg;
+      switch (c) {
+        case ".?": prog.push({ op: ">", at: at }); break;
+        case "?.": prog.push({ op: "<", at: at }); break;
+        case "..": prog.push({ op: "+", at: at }); break;
+        case "!!": prog.push({ op: "-", at: at }); break;
+        case ".!": prog.push({ op: "getc", at: at }); break;
+        case "!.": prog.push({ op: "putc", at: at }); break;
+        case "!?":
+          stack.push({ kind: "loop", at: prog.length });
+          prog.push({ op: "jz", at: at, target: -1 }); break;
+        case "?!": {
+          var t2 = stack.pop();
+          if (!t2 || t2.kind !== "loop") { fail("unmatched 엥?엥!", at); break; }
+          prog[t2.at].target = prog.length + 1;
+          prog.push({ op: "jnz", at: at, target: t2.at + 1 }); break;
+        }
+        case "??": prog.push({ op: "wait", at: at }); break;
+        case ".~":
+          arg = readArg("[", "]"); if (err) break;
+          prog.push({ op: "set", at: at, val: parseInt(arg, 10) || 0 }); break;
+        case "~.": prog.push({ op: "reset", at: at }); break;
+        case "~~": prog.push({ op: "puti", at: at }); break;
+        case ",,": prog.push({ op: "geti", at: at }); break;
+        case ",.":
+          arg = readArg("[", "]"); if (err) break;
+          prog.push({ op: "putu", at: at, val: parseInt(arg, 10) || 0 }); break;
+        case ",!":
+          arg = readArg("[", "]"); if (err) break;
+          prog.push({ op: "puts", at: at, val: arg }); break;
+        case ",~":
+          skipSpace();
+          if (src[i] !== "{") { fail("expected '{'", i); break; }
+          i++;
+          stack.push({ kind: "block", at: prog.length });
+          prog.push({ op: "ifz", at: at, target: -1 }); break;
+        case "~!":
+          arg = readArg("[", "]"); if (err) break;
+          stack.push({ kind: "label", at: prog.length, name: arg });
+          labels[arg] = prog.length + 1;
+          prog.push({ op: "jmp", at: at, target: -1 }); break;
+        case "!~": {
+          var t3 = stack.pop();
+          if (!t3 || t3.kind !== "label") { fail("unmatched 엥!엥~", at); break; }
+          prog[t3.at].target = prog.length;
+          prog.push({ op: "nop", at: at }); break;
+        }
+        case "~?":
+          arg = readArg("[", "]"); if (err) break;
+          prog.push({ op: "goto", at: at, name: arg }); break;
+        case "?~": prog.push({ op: "kill", at: at }); break;
+        default: fail("invalid command 엥" + a + "엥" + b, at);
+      }
+    }
+    if (!err && stack.length) fail("unclosed " + stack[stack.length - 1].kind, src.length);
+    for (var k = 0; k < prog.length && !err; k++) {
+      if (prog[k].op === "goto") {
+        if (!(prog[k].name in labels)) fail("no such label [" + prog[k].name + "]", prog[k].at);
+        else prog[k].target = labels[prog[k].name];
+      }
+    }
+    return { prog: prog, labels: labels, err: err };
+  }
+
+  function VM(prog, input) {
+    this.prog = prog; this.tape = [0]; this.dp = 0; this.pc = 0;
+    this.out = []; this.in = input || ""; this.inp = 0;
+    this.steps = 0; this.halted = false; this.waiting = false; this.error = null;
+  }
+  VM.prototype.done = function () { return this.halted || this.pc >= this.prog.length; };
+  VM.prototype.cell = function () { return this.tape[this.dp]; };
+  VM.prototype.step = function () {
+    if (this.done()) return;
+    var c = this.prog[this.pc], t = this.tape;
+    switch (c.op) {
+      case ">": this.dp++; if (this.dp >= t.length) t[this.dp] = 0; break;
+      case "<": this.dp--; if (this.dp < 0) { this.dp = 0; this.halted = true; this.error = "pointer fell off the left end"; } break;
+      case "+": t[this.dp]++; break;
+      case "-": t[this.dp]--; break;
+      case "getc": t[this.dp] = this.inp < this.in.length ? this.in.charCodeAt(this.inp++) : 0; break;
+      case "putc": this.out.push(String.fromCharCode(t[this.dp])); break;
+      case "jz": if (!t[this.dp]) { this.pc = c.target; return; } break;
+      case "jnz": if (t[this.dp]) { this.pc = c.target; return; } break;
+      case "ifz": if (!t[this.dp]) { this.pc = c.target; return; } break;
+      case "wait": this.waiting = true; break;
+      case "set": t[this.dp] = c.val; break;
+      case "reset": t[this.dp] = 0; break;
+      case "puti": this.out.push(String(t[this.dp])); break;
+      case "geti": {
+        var m = /-?\d+/.exec(this.in.slice(this.inp));
+        if (m) { t[this.dp] = parseInt(m[0], 10); this.inp += m.index + m[0].length; }
+        else { t[this.dp] = 0; this.inp = this.in.length; }
+        break;
+      }
+      case "putu": this.out.push(String.fromCodePoint(c.val)); break;
+      case "puts": this.out.push(c.val); break;
+      case "jmp": case "goto": this.pc = c.target; this.steps++; return;
+      case "nop": break;
+      case "kill": this.halted = true; break;
+    }
+    this.pc++; this.steps++;
+  };
+  return { compile: compile, VM: VM };
+})();
+
+var src = "", cp = null, vm = null, running = 0;
+
+function init() {
+  src = document.getElementById("code").value;
+  cp = AH.compile(src);
+  vm = new AH.VM(cp.prog, document.getElementById("stdin").value);
+  running = 0;
+  document.getElementById("output").textContent = "";
+  show();
+  if (cp.err) alert(cp.err.msg + " (at character " + cp.err.at + ")");
+}
+
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+function show() {
+  var w = document.getElementById("workspace");
+  if (!vm) { w.innerHTML = "&nbsp;"; return; }
+  var p = vm.prog, pc = vm.pc, win;
+  if (pc < p.length) {
+    var a = p[pc].at, b = (pc + 1 < p.length) ? p[pc + 1].at : src.length;
+    while (b > a && /\s/.test(src[b - 1])) b--;
+    win = esc(src.substring(Math.max(0, a - 18), a).replace(/\n/g, " "))
+        + "<b>" + esc(src.substring(a, b)) + "</b>"
+        + esc(src.substring(b, Math.min(src.length, b + 18)).replace(/\n/g, " "));
+  } else win = "<i>end of program</i>";
+  var cells = "";
+  for (var i = 0; i < Math.max(vm.tape.length, 8); i++) {
+    var v = vm.tape[i] === undefined ? 0 : vm.tape[i];
+    var s = ("    " + v).slice(-4);
+    cells += (i == vm.dp ? "<b>[" + s + "]</b>" : " " + s + " ");
+  }
+  w.innerHTML = "pc <i>" + pc + "</i>/" + p.length
+    + "   cell <i>" + vm.dp + "</i>   steps <i>" + vm.steps + "</i>"
+    + (vm.error ? "   <i>" + esc(vm.error) + "</i>" : (vm.done() ? "   <i>halted</i>" : ""))
+    + "\n..." + win + "...\n" + cells;
+  flush();
+}
+
+function flush() {
+  if (vm && vm.out.length) {
+    document.getElementById("output").textContent += vm.out.join("");
+    vm.out = [];
+  }
+}
+
+function do_step() {
+  if (!vm) init();
+  if (vm.done()) return;
+  var n = parseInt(document.getElementById("stepsize").value) || 1;
+  while (n-- > 0 && !vm.done()) { vm.step(); vm.waiting = false; }
+  show();
+}
+
+function do_run() {
+  if (!vm) init();
+  if (running) { running = 0; return; }
+  running = 1; chunk();
+}
+
+function chunk() {
+  if (!running) { show(); return; }
+  var n = 200000;
+  while (n-- > 0 && !vm.done() && !vm.waiting) vm.step();
+  show();
+  if (vm.done()) { running = 0; return; }
+  if (vm.waiting) { vm.waiting = false; setTimeout(chunk, 1000); return; }
+  setTimeout(chunk, 0);
+}
+
+init();
+</script>
+</center></body></html>
