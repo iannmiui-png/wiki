@@ -1,0 +1,357 @@
+<pre>Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>batty
+----- batty.bat -----
+@echo off
+setlocal enabledelayedexpansion
+
+rem --- directory to scan (current directory) ---
+set "DIR=%~dp0"
+
+for %%F in ("%DIR%\*") do (
+    if /I not "%%~xF"==".exe" (
+        echo ----- %%~nxF -----
+        type "%%F"
+        echo.
+    )
+)
+----- M.py -----
+import math
+
+# Base53 digit -> 53-TET interval ratio and cents
+BASE = 53
+
+def m_digit_interval(d):
+    """
+    d: base53 digit, 0 <= d <= 52
+    returns: (ratio, cents)
+    ratio = 2^(d/53)
+    cents = 1200 * log2(ratio)
+    """
+    ratio = 2 ** (d / BASE)
+    cents = 1200 * (d / BASE)  # since log2(2^(d/53)) = d/53
+    return ratio, cents
+
+# Full series for digits 0..52
+M_SERIES = [
+    {
+        "digit": d,
+        "ratio": 2 ** (d / BASE),
+        "cents": 1200 * (d / BASE),
+    }
+    for d in range(BASE)
+]
+
+# Example: print first few entries
+if __name__ == "__main__":
+    for entry in M_SERIES[:52]:
+        d = entry["digit"]
+        r = entry["ratio"]
+        c = entry["cents"]
+        print(f"d={d:2d} -> ratio={r:.9f}, cents={c:.3f}")
+
+----- mu.py -----
+import math
+
+# Base27 digit -> 27-TET interval ratio and cents
+BASE = 27
+
+def miu_digit_interval(e):
+    """
+    e: base27 digit, 0 <= e <= 27
+    returns: (ratio, cents)
+    ratio = 2^(e/27)
+    cents = 1200 * (e/27)
+    """
+    ratio = 2 ** (e / BASE)
+    cents = 1200 * (e / BASE)
+    return ratio, cents
+
+# Full series for digits 0..27 (28 values)
+MIU_SERIES = [
+    {
+        "digit": e,
+        "ratio": 2 ** (e / BASE),
+        "cents": 1200 * (e / BASE),
+    }
+    for e in range(BASE + 1)
+]
+
+# Example: print all entries
+if __name__ == "__main__":
+    for entry in MIU_SERIES:
+        e = entry["digit"]
+        r = entry["ratio"]
+        c = entry["cents"]
+        print(f"e={e:2d} -> ratio={r:.9f}, cents={c:.3f}")
+
+----- muton.py -----
+import M
+import mu
+import t
+import o
+
+# Load series from your modules
+M_SERIES = M.M_SERIES          # 0..52
+MIU_SERIES = mu.MIU_SERIES     # 0..27
+BASE20_SERIES = t.BASE20_SERIES  # 19 entries
+BASE13_SERIES = o.BASE13_SERIES  # 13 entries
+
+# Convenience: turn lists into dicts keyed by digit
+miu_map = {e["digit"]: e for e in MIU_SERIES}
+m20_map = {e["digit"]: e for e in BASE20_SERIES}
+m13_map = {e["digit"]: e for e in BASE13_SERIES}
+
+# Chromatic note names starting at A, with your half-flat = Z
+NOTE_NAMES = [
+    "A", "A#", "B", "C", "C#", "D",
+    "D#", "E", "F", "F#", "G", "G#",
+    "Z"   # A half-flat
+]
+
+print("{| class=\"wikitable\"")
+print("|+ Muton unified macroset table")
+print("|-")
+print("! d53 !! ratio53 !! cents53 !! d27 !! ratio27 !! cents27 !! var20 !! ratio20 !! cents20 !! d13 !! ratio13 !! cents13 !! note")
+
+for entry in M_SERIES:
+    d53 = entry["digit"]
+    r53 = entry["ratio"]
+    c53 = entry["cents"]
+
+    # base27 row (only 0..27)
+    if d53 <= 27:
+        miu = miu_map[d53]
+        d27 = miu["digit"]
+        r27 = miu["ratio"]
+        c27 = miu["cents"]
+    else:
+        d27 = ""
+        r27 = ""
+        c27 = ""
+
+    # base20 row (only 1..20 mapped to d..w)
+    if d53 >= 9 and d53 <= 28:
+        idx = d53 - 8  # maps 9ΓåÆ1, 10ΓåÆ2, ..., 28ΓåÆ20
+        if idx in m20_map:
+            m20 = m20_map[idx]
+            var20 = m20["var"]
+            r20 = m20["ratio"]
+            c20 = m20["cents"]
+        else:
+            var20 = ""
+            r20 = ""
+            c20 = ""
+    else:
+        var20 = ""
+        r20 = ""
+        c20 = ""
+
+    # base13 row (only 0..12)
+    if d53 >= 9 and d53 <= 21:
+        idx13 = d53 - 9  # maps 9ΓåÆ0, 10ΓåÆ1, ..., 21ΓåÆ12
+        if idx13 in m13_map:
+            m13 = m13_map[idx13]
+            d13 = m13["digit"]
+            r13 = m13["ratio"]
+            c13 = m13["cents"]
+            note = NOTE_NAMES[idx13]
+        else:
+            d13 = ""
+            r13 = ""
+            c13 = ""
+            note = ""
+    else:
+        d13 = ""
+        r13 = ""
+        c13 = ""
+        note = ""
+
+    print("|-")
+    print(f"| {d53} || {r53:.9f} || {c53:.3f} || {d27} || {r27} || {c27} || {var20} || {r20} || {c20} || {d13} || {r13} || {c13} || {note}")
+
+print("|}")
+
+----- o.py -----
+import math
+
+BASE = 13  # conceptual base, 13 distinct values
+
+def base13_step(d):
+    """
+    d: base13 digit, 0 <= d <= 12
+       0-11: chromatic semitone steps (100 cents each)
+       12 : octave minus a half-flat (1150 cents)
+    returns: (ratio, cents)
+    """
+    if not (0 <= d <= 12):
+        raise ValueError("d must be in range 0..12")
+
+    if d <= 11:
+        cents = d * 100.0
+    else:
+        # 13th value: half-flat octave (50 cents below 1200)
+        cents = 1150.0
+
+    ratio = 2 ** (cents / 1200.0)
+    return ratio, cents
+
+
+# Full series for digits 0..12
+BASE13_SERIES = [
+    {
+        "digit": d,
+        "ratio": base13_step(d)[0],
+        "cents": base13_step(d)[1],
+    }
+    for d in range(13)
+]
+
+if __name__ == "__main__":
+    for entry in BASE13_SERIES:
+        d = entry["digit"]
+        r = entry["ratio"]
+        c = entry["cents"]
+        print(f"d={d:2d} -> ratio={r:.9f}, cents={c:.3f}")
+
+----- README.py -----
+import M
+import mu
+import t
+import o
+
+# Load series from your modules
+M_SERIES = M.M_SERIES          # 0..52
+MIU_SERIES = mu.MIU_SERIES     # 0..27
+BASE20_SERIES = t.BASE20_SERIES  # 19 entries
+BASE13_SERIES = o.BASE13_SERIES  # 13 entries
+
+# Convenience: turn lists into dicts keyed by digit
+miu_map = {e["digit"]: e for e in MIU_SERIES}
+m20_map = {e["digit"]: e for e in BASE20_SERIES}
+m13_map = {e["digit"]: e for e in BASE13_SERIES}
+
+# Chromatic note names starting at A, with your half-flat = Z
+NOTE_NAMES = [
+    "A", "A#", "B", "C", "C#", "D",
+    "D#", "E", "F", "F#", "G", "G#",
+    "Z"   # A half-flat
+]
+
+# Markdown header
+print("| d53 | ratio53 | cents53 | d27 | ratio27 | cents27 | var20 | ratio20 | cents20 | d13 | ratio13 | cents13 | note |")
+print("|-----|---------|---------|-----|---------|---------|-------|---------|---------|-----|---------|---------|------|")
+
+for entry in M_SERIES:
+    d53 = entry["digit"]
+    r53 = entry["ratio"]
+    c53 = entry["cents"]
+
+    # base27 row (only 0..27)
+    if d53 <= 27:
+        miu = miu_map[d53]
+        d27 = miu["digit"]
+        r27 = miu["ratio"]
+        c27 = miu["cents"]
+    else:
+        d27 = ""
+        r27 = ""
+        c27 = ""
+
+    # base20 row (only 1..20 mapped to d..w)
+    if 9 <= d53 <= 28:
+        idx = d53 - 8  # maps 9ΓåÆ1, 10ΓåÆ2, ..., 28ΓåÆ20
+        if idx in m20_map:
+            m20 = m20_map[idx]
+            var20 = m20["var"]
+            r20 = m20["ratio"]
+            c20 = m20["cents"]
+        else:
+            var20 = ""
+            r20 = ""
+            c20 = ""
+    else:
+        var20 = ""
+        r20 = ""
+        c20 = ""
+
+    # base13 row (only 0..12)
+    if 9 <= d53 <= 21:
+        idx13 = d53 - 9  # maps 9ΓåÆ0, 10ΓåÆ1, ..., 21ΓåÆ12
+        if idx13 in m13_map:
+            m13 = m13_map[idx13]
+            d13 = m13["digit"]
+            r13 = m13["ratio"]
+            c13 = m13["cents"]
+            note = NOTE_NAMES[idx13]
+        else:
+            d13 = ""
+            r13 = ""
+            c13 = ""
+            note = ""
+    else:
+        d13 = ""
+        r13 = ""
+        c13 = ""
+        note = ""
+
+    print(f"| {d53} | {r53:.9f} | {c53:.3f} | {d27} | {r27} | {c27} | {var20} | {r20} | {c20} | {d13} | {r13} | {c13} | {note} |")
+
+----- t.py -----
+import math
+
+# Base20 algebraic generator using variables d-w
+BASE = 20
+
+variables = [
+    ("d", 1), ("e", 2), ("f", 3), ("g", 4), ("h", 5),
+    ("i", 6), ("j", 7), ("k", 8), ("l", 9), ("m", 10),
+    ("n", 11), ("o", 12), ("p", 13), ("q", 14), ("r", 15),
+    ("s", 16), ("t", 17), ("u", 18), ("v", 19), ("w", 20)
+]
+
+BASE20_SERIES = [
+    {
+        "var": name,
+        "digit": value,
+        "ratio": 2 ** (value / BASE),
+        "cents": 1200 * (value / BASE),
+    }
+    for name, value in variables
+]
+
+if __name__ == "__main__":
+    for entry in BASE20_SERIES:
+        print(f"{entry['var']} -> ratio={entry['ratio']:.9f}, cents={entry['cents']:.3f}")
+
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^D
+'♦' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^E
+'♣' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^F
+'♠' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^C
+'♥' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^B
+'☻' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^B
+'☻' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton>^C
+'♥' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Miu\Desktop\Desktop\Esolang\Esolang-main\Mmuton></pre>
