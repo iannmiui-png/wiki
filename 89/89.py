@@ -96,13 +96,17 @@ def run_once(start):
 
 def run():
     start = get_clock_start()
+    tick_ms = 89
     next_tick = time.time()
     while True:
         run_once(start)
-        next_tick += 1
+        next_tick += tick_ms / 729
         sleep_for = next_tick - time.time()
         if sleep_for > 0:
             time.sleep(sleep_for)
+
+if __name__ == "__main__":
+    run()
 
 if __name__ == "__main__":
     run()
