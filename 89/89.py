@@ -1,8 +1,6 @@
 import sys, time, select
 
 def try_read_byte():
-    """Non-blocking stdin read: grab a byte only if one's already waiting,
-    otherwise return 0 immediately. This clock must never stall waiting on input."""
     try:
         if select.select([sys.stdin], [], [], 0)[0]:
             ch = sys.stdin.read(1)
@@ -11,7 +9,6 @@ def try_read_byte():
         pass
     return 0
 
-# fib(11) = 89, hence "89 lang".
 def fib(n):
     a, b = 0, 1
     for _ in range(n):
@@ -22,8 +19,6 @@ _f = fib(11)
 S = [_f * (_f + i) for i in range(12)]                 # [7921, 8010, ..., 8900]
 GROUPS = [str(x)[-2:] for x in S]                       # last two digits of each
 # GROUPS = ['21','10','99','88','77','66','55','44','33','22','11','00']
-# '99' (tick 2) and '88' (tick 3) can never appear in an octal string --
-# those two ticks are permanently silent. The other ten can fire.
 
 def bf(code, max_steps=200000):
     stack = []
@@ -42,7 +37,7 @@ def bf(code, max_steps=200000):
     while cp < len(code):
         steps += 1
         if steps > max_steps:
-            return  # runaway/infinite loop -- stop silently, keep the clock ticking
+            return
         c = code[cp]
         if c == '3':
             tape[p] = (tape[p] + 1) % 256
@@ -51,7 +46,8 @@ def bf(code, max_steps=200000):
         if c == '6':
             tape[p] = try_read_byte() % 256
         if c == '5':
-            print(chr(tape[p]), end='')
+            if tape[p] == 4:
+                print(chr(tape[p]), end='')
         if c == '2':
             p -= 1
         if c == '1':
@@ -89,14 +85,14 @@ def run_once(start):
         code = code.replace(group, "", 1)
         removed = group
 
-    if removed:  # only output nonempty strings
+    if removed:
         print(removed, end=' ')
 
     try:
         bf(code)
     except Exception:
-        pass  # crashes are silent -- just an empty tick
-    print()  # newline to close out this tick's line
+        pass
+    print()
 
 def run():
     start = get_clock_start()
