@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="client-js" lang="en" dir="ltr"><head>
+<meta charset="UTF-8">
+<title>Trɪ̯maxion - Esolang</title>
+<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=ext.cite.styles%7Cskins.vector.styles.legacy&amp;only=styles&amp;skin=vector">
+<script async="" src="/w/load.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector">
+<meta name="generator" content="MediaWiki 1.43.9">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=1120">
+<link rel="search" type="application/opensearchdescription+xml" href="/w/rest.php/v1/search" title="Esolang (en)">
+<link rel="EditURI" type="application/rsd+xml" href="//esolangs.org/w/api.php?action=rsd">
+<link rel="canonical" href="https://esolangs.org/wiki/Tr%C9%AA%CC%AFmaxion">
+<link rel="license" href="/wiki/Esolang:Copyrights">
+<link rel="alternate" type="application/atom+xml" title="Esolang Atom feed" href="/w/index.php?title=Special:RecentChanges&amp;feed=atom">
+<script src="/w/load.php?lang=en&amp;modules=ext.checkUser.clientHints%7Cext.cite.ux-enhancements%7Cjquery%2Csite%7Cjquery.client%7Cmediawiki.String%2CTitle%2Capi%2Cbase%2Ccldr%2Ccookie%2CjqueryMsg%2Clanguage%2Ctoc%2Cuser%2Cutil%7Cmediawiki.libs.pluralruleparser%7Cmediawiki.page.ready%7Cskins.vector.legacy.js&amp;skin=vector&amp;version=g2fht"></script></head>
+<body class="skin-vector-legacy mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Trɪ̯maxion rootpage-Trɪ̯maxion skin-vector action-view"><div id="mw-page-base" class="noprint"></div>
+<div id="mw-head-base" class="noprint"></div>
+<div id="content" class="mw-body" role="main">
+	<a id="top"></a>
+	<div id="siteNotice"><div id="localNotice" data-nosnippet=""><div class="sitenotice" lang="en" dir="ltr"><p><b>We are currently working on new rules for what content should and shouldn't be allowed on this website, and are looking for feedback! See <a href="/wiki/Esolang:2026_topicality_proposal" title="Esolang:2026 topicality proposal">Esolang:2026 topicality proposal</a> to view and give feedback on the current draft.</b>
+</p></div></div></div>
+	<div class="mw-indicators">
+	</div>
+	<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Trɪ̯maxion</span></h1>
+	<div id="bodyContent" class="vector-body">
+		<div id="siteSub" class="noprint">From Esolang</div>
+		<div id="contentSub"><div id="mw-content-subtitle"></div></div>
+		<div id="contentSub2"></div>
+		
+		<div id="jump-to-nav"></div>
+		<a class="mw-jump-link" href="#mw-head">Jump to navigation</a>
+		<a class="mw-jump-link" href="#searchInput">Jump to search</a>
+		<div id="mw-content-text" class="mw-body-content"><div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr"><p><a class="mw-selflink selflink">Trɪ̯maxion</a> is a <a href="/wiki/TernLSB" title="TernLSB">TernLSB</a> derivative language. The name is a reference to Buckminster Fuller's Dymaxion concept, but it is trinary. Like <b>TernLSB</b> the programs are stored in an image but program images are specified to what is called "<i>positive feedback</i>"<a href="#Bibliography"><sup id="cite_ref-positive_feedback_1-0" class="reference"></sup></a><a href="#cite_note-positive_feedback-1"><span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></a> format.
+</p>
+<blockquote><p>In its simplest form, Fuller's Dymaxion concept is that rational action in a rational world, in every social and industrial operation, demands the most efficient over-all perfomance per units of input. A Dymaxion structure, thus, would be one whose performance yielded the greatest possible efficiency in terms of the available technology."<a href="#Bibliography"><sup id="cite_ref-Dymaxion_2-0" class="reference"></sup></a><a href="#cite_note-Dymaxion-2"><span class="cite-bracket">[</span>2<span class="cite-bracket">]</span></a> </p></blockquote>
+<p>The <a class="mw-selflink selflink">Trɪ̯maxion</a> concept is by extension a structure who's performance yields the greatest possible efficiency in terms of technology which is <i>not</i> yet available; hence (in this example) it is an <a href="/wiki/Esoteric_programming_language" title="Esoteric programming language">esoteric programming language</a>.
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Memory_model"><span class="tocnumber">1</span> <span class="toctext">Memory model</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Examples"><span class="tocnumber">2</span> <span class="toctext">Examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-3"><a href="#Hello,_World!"><span class="tocnumber">2.1</span> <span class="toctext">Hello, World!</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Computational_class"><span class="tocnumber">3</span> <span class="toctext">Computational class</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#See_also"><span class="tocnumber">4</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#External_Resources"><span class="tocnumber">5</span> <span class="toctext">External Resources</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Bibliography"><span class="tocnumber">6</span> <span class="toctext">Bibliography</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Memory_model">Memory model</span></h1>
+<p>Programs are stored in the form of <a href="/wiki/Alexandrion#Kontakions_as_memory_images" title="Alexandrion"> kontakion</a> images. The <i>positive feedback</i> format nomenclature stems from the fact that the encoded programs can be constructed from the container image.
+Given that kontakions are a form of memory image this also serves as the memory model and makes this language part of the <a href="/wiki/9_trits,_19683_trytes" title="9 trits, 19683 trytes">9_trits,_19683_trytes</a> family. 
+</p>
+<h1><span class="mw-headline" id="Examples">Examples</span></h1>
+<h3><span id="Hello.2C_World.21"></span><span class="mw-headline" id="Hello,_World!"><a href="/wiki/Hello,_World!" class="mw-redirect" title="Hello, World!">Hello, World!</a></span></h3>
+<figure class="mw-default-size mw-halign-none" typeof="mw:File"><a href="/wiki/File:Hello_world.tmax.png" class="mw-file-description"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAAfCAYAAABH0YUgAAADfUlEQVR4nNWYTW+rOhCGHw82EELSTdQvdVkl7Y6/0D/fZTddVJXadFulXbYk4AB3ca4t+pHTcKUL57xSRAzYnofxjAdUkiTNfD4nSRLiOKYsS97e3hAR6rpGRDDGYK0lCAKqqqJpGpRS/ro7uvNKKQDG4zFlWWKtRURQSlFVFVprttstWmvfZ7vdUte1b2utAfx4RVEQxzHWWrTWVFXlxyzLkvv7exaLBaPRCHV1ddVorVmv13vDuPOfYdx9aZr2CnNxcUEcx0RRhDEGsdby8vJCnuc4RVEEQF3XAGy3W9oqisJP3DZgNBoRhiHv7+9UVUUQBNR17e8DCIIAgKqqKMuSqqoAMMagtUYphYhQlqV/UA64aRqCIMBay+3tLSJClmUcHBxwdHSEtZbVaoXsA+PON03zAcYZmKYpxpjeYIIg8DDHx8dYa3l6evKOkd/BBEGAUorNZvPBU8YYlFIkSdKrZ7TWHsYt8eVy+WWVyXcwxhjfdhMAhGEIQBzHvXrGGEOWZUynU05OTiiKgtVqtTNkpA3jjCrL8kPb/Y/juFfPhGFIlmVMJhNOT08pioLHx8cf418An03cBWeki6HJZNKrZ6Io8jB5nlMUBQ8PD3slM6UU4tJte5k5TafTXj0TxzFZlpGmKXme+1jeNzP7vbMN446TyaRXGID5fO6Tz+vrK2ma7r1vup/bw6RdHSilet84F4sFAEmSkCQJTdN0AnIeaxcC2hkgIoOUNS4BOaCiKPYGaq+WdmUjxhj/dPoGEhEPJCKdgESEqqq+lGphGP4qk4YACoKAKIqYzWaICHme/wjk5mmahqZpPhTU7e1IDwGktcYYw2w2Y7PZ7A0E+Lnd2O5+Z8d4PEb6BjLGYIwhSRI2mw2r1Youar/atOW8B//Wfn3KGSQinYHg15bhjG/LPWQYEMplrv/a/7PaoIN66uzsjMvLy079rbXfgrUri16hlFKs12vfDsOQu7u7vfr6eJHvTXavQzCgp5RSLJfLzv3aCaEtV4bBgFBd1fbUruU3uKcAzs/POTw87NzvO0+5qgIGhHL71Xg87tT/O6D2uDBwTD0/P+80cpdcVf5ZRVEMv/y01sRx7D+37as/3lMiwnQ67dT/88uq0x8RU+6teNe+8zv95K2/JqW7WArD8MtXrs/janpSnufc3Nz49vX19f82lwK6pZ+/QP8AA3ov8KZRWIsAAAAASUVORK5CYII=" decoding="async" width="53" height="31" class="mw-file-element"></a><figcaption></figcaption></figure>
+<h1><span class="mw-headline" id="Computational_class">Computational class</span></h1>
+<blockquote><p>But what few ocould realize was that Fuller's energies and discipline were centered in a single drive: to promote <i>the total use of total technology for total population</i> "at the maximum feasible rate of acceleration."<a href="#Bibliography"><sup id="cite_ref-total_3-0" class="reference"></sup></a><a href="#cite_note-total-3"><span class="cite-bracket">[</span>3<span class="cite-bracket">]</span></a></p></blockquote>
+<p>In the spirit of Buckminster Fuller's design philosophy this language is <a href="/wiki/Total" class="mw-redirect" title="Total">total</a> and thus not <a href="/wiki/Turing-complete" title="Turing-complete">Turing-complete</a>.
+</p>
+<h1><span class="mw-headline" id="See_also">See also</span></h1>
+<ul><li><a href="/wiki/TernLSB" title="TernLSB">TernLSB</a></li>
+<li><a href="/wiki/Alexandrion" title="Alexandrion">Alexandrion</a></li>
+<li><a href="/wiki/9_trits,_19683_trytes" title="9 trits, 19683 trytes">9_trits,_19683_trytes</a></li></ul>
+<h1><span class="mw-headline" id="External_Resources">External Resources</span></h1>
+<ul><li><a rel="nofollow" class="external free" href="https://en.wikipedia.org/wiki/Dymaxion_(disambiguation)">https://en.wikipedia.org/wiki/Dymaxion_(disambiguation)</a></li>
+<li><a rel="nofollow" class="external free" href="https://gitea.com/miui-eso/trimaxion.py">https://gitea.com/miui-eso/trimaxion.py</a> python interpreter</li></ul>
+<h1><span class="mw-headline" id="Bibliography">Bibliography</span></h1>
+<ul><li>Marks, Robert (1973). The Dymaxion World of Buckminster Fuller. Anchor Press / Doubleday.</li></ul>
+<div class="mw-references-wrap"><ol class="references">
+<li id="cite_note-positive_feedback-1"><span class="mw-cite-backlink"><a href="#cite_ref-positive_feedback_1-0">↑</a></span> <span class="reference-text">Preface.</span>
+</li>
+<li id="cite_note-Dymaxion-2"><span class="mw-cite-backlink"><a href="#cite_ref-Dymaxion_2-0">↑</a></span> <span class="reference-text">Page 4.</span>
+</li>
+<li id="cite_note-total-3"><span class="mw-cite-backlink"><a href="#cite_ref-total_3-0">↑</a></span> <span class="reference-text">Page 9.</span>
+</li>
+</ol></div>
+
+<footer id="footer" class="mw-footer">
+	<ul id="footer-info">
+	<li id="footer-info-lastmod"> This page was last edited on 19 September 2026, at 06:04.</li>
+	<li id="footer-info-copyright">Content is available under <a href="/wiki/Esolang:Copyrights" title="Esolang:Copyrights">CC0 public domain dedication</a>.</li>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-about"><a href="/wiki/Esolang:About">About Esolang</a></li>
+	<li id="footer-places-disclaimers"><a href="/wiki/Esolang:General_disclaimer">Disclaimers</a></li>
+</ul>
+
+
+
+</body></html>
