@@ -1,4 +1,4 @@
-"""trimaxion.py - a Tri-maxion interpreter (self-contained, no jesus.py needed).
+"""trimaxion.py - a Trɪ̯maxion interpreter .
 
 Usage:
     python3 trimaxion.py program.png
@@ -12,17 +12,6 @@ Usage:
     python3 trimaxion.py program.jesus
         derive a pff image from an existing Kontakion (an Alexandrion
         registry file)
-
-Positive feedback (pff) format
--------------------------------
-There are no carriers or hidden low-bit tricks. The pixel values ​​of the pff image are raw bytes from the Kontakion registry, arranged in row-major order.
-The raster is structured as follows:
-
-    "\\n" + "\\n".join(registry_lines) + ("\\0" * padding)
-
-This data is reconstructed into a grid of size WxH, where W is the length of the longest line plus one, and H is the number of lines plus one. In other words, the shape of the image is determined directly by the program itself rather than being dictated by external media specifications. Leading newline characters or trailing null padding in the data cause no issues. Since the original lines of the Kontakion do not contain these specific bytes, the decoding process simply involves reading the flattened raster data sequentially starting from index 1 and stopping upon encountering the first 0x00 value.
-
-Since all channels of a pixel have identical values ​​(R=G=B), the result remains the same whether you use a simple grayscale saving process (such as the PGM format or standard RGB-to-grayscale conversion tools) or process the image via RGBA PNG/BMP formats. This is because calculating the weighted average of identical values ​​yields the value itself.
 """
 import re
 import sys
