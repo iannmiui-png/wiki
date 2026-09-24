@@ -1,4 +1,4 @@
-"""trimaxion.py - a Trɪ̯maxion interpreter .
+"""trimaxion.py - a Tri-maxion interpreter (self-contained, no jesus.py needed).
 
 Usage:
     python3 trimaxion.py program.png
@@ -11,7 +11,27 @@ Usage:
 
     python3 trimaxion.py program.jesus
         derive a pff image from an existing Kontakion (an Alexandrion
-        registry file)
+        registry file, the format jesus.py reads/writes)
+
+Positive feedback (pff) format
+-------------------------------
+There is no carrier and no hidden low-bit trickery: a pff image's pixel
+values ARE the Kontakion registry's raw bytes, laid out row-major. The
+raster is built as
+
+    "\\n" + "\\n".join(registry_lines) + ("\\0" * padding)
+
+reshaped into a WxH grid, where W = (longest line's length) + 1 and
+H = (number of lines) + 1 -- so the picture's own shape is derived
+straight from the program, not chosen to fit some external carrier.
+The leading newline and the null padding are both harmless: a Kontakion
+line never legitimately contains either byte, so decoding just walks
+the flattened raster from index 1 and stops at the first 0x00.
+
+Every channel of a pixel carries the same value (R=G=B), so this
+round-trips through a plain grayscale save (PGM, or any tool's
+RGB->grayscale conversion) as well as it does through RGBA PNG/BMP --
+a weighted average of three equal numbers is that number exactly.
 """
 import re
 import sys
@@ -20,6 +40,12 @@ from PIL import Image
 
 M = 3 ** 9  # 19683
 HEPT = "0ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# --------------------------------------------------------------------------
+# terscii: jesus.py's 2-digit-per-character encoding, used only to build
+# the address/word fields *inside* each Kontakion line -- unrelated to
+# how a pff image stores the line's own characters (see below).
+# --------------------------------------------------------------------------
 
 _ROMAN = [
     ["ES", "SP", "0", "9", "I", "R", "_", "i", "r"],
@@ -156,7 +182,10 @@ def load_kontakion(lines):
 
 
 def run_kontakion(lines):
-    """The decoded Kontakion registry extracts the encoded text. This process is structurally bounded in scope (since the pointer doubles modulo an odd M, it can cycle through at most M states). As Tri-maxion is designed to be a total function, it raises an exception rather than entering an infinite loop."""
+    """Extract the text a decoded Kontakion registry encodes. Bounded by
+    construction (the pointer doubles mod the odd number M, so it can
+    only cycle through at most M states) -- Tri-maxion is meant to be
+    total, so this raises instead of ever looping forever."""
     cells = load_kontakion(lines)
     k_start = dlog2(cells[7])
     k_end = dlog2(cells[max(cells)])
@@ -165,16 +194,27 @@ def run_kontakion(lines):
                           "malformed pff image")
     return "".join(chr(cells[k]) for k in range(k_start, k_end))
 
+
+# --------------------------------------------------------------------------
+# pff (positive feedback): the image's shape IS the registry's shape, and
+# every pixel's value IS one raw byte of the registry text -- no hidden
+# indirection. See module docstring for the exact byte layout.
+# --------------------------------------------------------------------------
+
 def encode_pff(lines):
-    """It generates a PFF image directly from the Kontakion registry. It returns a PIL image and does not reference any information other than the registry itself."""
+    """Build a pff image straight from a Kontakion registry. Returns a
+    PIL Image; nothing outside the registry itself is consulted.
+
+    Width/height are derived from these exact lines (longest line + 1,
+    line count + 1), so the canvas always has room for its own content
+    by construction -- there's no separate carrier to run out of space,
+    and no "image too small" failure mode to guard against."""
     width = max((len(ln) for ln in lines), default=0) + 1
     height = len(lines) + 1
     total = width * height
 
     content = "\n" + "\n".join(lines)
-    if len(content) > total:
-        raise ValueError("registry doesn't fit its own derived canvas -- "
-                          "this shouldn't happen")
+    assert len(content) <= total  # guaranteed by the width/height formula above
     raster = [ord(c) for c in content] + [0] * (total - len(content))
 
     im = Image.new("RGBA", (width, height))
@@ -219,9 +259,27 @@ def main():
         print("  python3 trimaxion.py program.png     decode+run a pff image")
         print("  python3 trimaxion.py '\"text\"'        derive a pff image for text")
         print("  python3 trimaxion.py program.jesus   derive a pff image from a Kontakion")
+        print("  python3 trimaxion.py -               'cat': encode stdin as a pff image")
+        print("  python3 trimaxion.py program.txt     encode a text file's exact contents")
+        print("                                        (any of these last three bake the")
+        print("                                        text in at generation time -- a")
+        print("                                        Kontakion's output is fixed once")
+        print("                                        made, so this is what it will")
+        print("                                        always echo back)")
         return
 
     arg = sys.argv[1]
+    IMAGE_EXTS = (".png", ".bmp", ".pgm", ".ppm", ".gif", ".tif", ".tiff")
+
+    if arg == "-":
+        text = sys.stdin.read()
+        lines = generate_kontakion(text)
+        out = "cat.tmax.png"
+        im = encode_pff(lines)
+        im.save(out)
+        print(f"Generated a cat of stdin ({len(text)} chars) -> {out} "
+              f"({im.size[0]}x{im.size[1]})")
+        return
 
     if '"' in arg or "'" in arg:
         text = arg.strip().strip('"\'')
@@ -240,10 +298,21 @@ def main():
         print(f"Derived pff image from {arg} -> {out} ({im.size[0]}x{im.size[1]})")
         return
 
-    # otherwise: treat it as a pff image to decode and run
-    lines = decode_pff(arg)
-    text = run_kontakion(lines)
-    print("Text from pff Kontakion:", repr(text))
+    if arg.lower().endswith(IMAGE_EXTS):
+        lines = decode_pff(arg)
+        text = run_kontakion(lines)
+        print("Text from pff Kontakion:", repr(text))
+        return
+
+    # anything else: a plain text file, taken verbatim (newlines and all)
+    with open(arg, "r", newline="") as f:
+        text = f.read()
+    lines = generate_kontakion(text)
+    out = arg.rsplit(".", 1)[0] + ".tmax.png" if "." in arg else arg + ".tmax.png"
+    im = encode_pff(lines)
+    im.save(out)
+    print(f"Generated Kontakion from {arg} ({len(text)} chars) -> {out} "
+          f"({im.size[0]}x{im.size[1]})")
 
 
 if __name__ == "__main__":
