@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Specification</title>
+  <style>
+    :root {
+      --bg-color: #faf9f5;
+      --card-bg: #ffffff;
+      --border-color: #d2d1c8;
+      --border-subtle: #e2e1d9;
+      --text-main: #111111;
+      --text-muted: #555550;
+      --text-dim: #777770;
+      --accent-color: #d97706;
+      --code-bg: #f4f3ed;
+      --code-color: #059669;
+      --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 2.5rem 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: #ffffff;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-color);
+      background: #fffbe0;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #fef3c7;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    main {
+      padding: 2rem 2.5rem;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+
+    strong {
+      color: var(--text-main);
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background-color: var(--code-bg);
+      color: var(--code-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      font-weight: 600;
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      color: var(--text-main);
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .palette-item {
+      display: flex;
+      items-center;
+      gap: 8px;
+      padding: 8px;
+      background: var(--code-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .color-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      background: #f8f7f2;
+      font-weight: 700;
+    }
+
+    tr:hover td {
+      background-color: #f8f7f2;
+    }
+
+    .cmd-code {
+      font-family: var(--font-mono);
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    .cmd-visual {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .footer {
+      padding: 1.5rem 2.5rem;
+      background: #f8f7f2;
+      border-top: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<h1><span class="mw-headline" id="exploring_the_bliss_pit">exploring the bliss pit</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Talk:A_bliss-pit&amp;action=edit&amp;section=1" title="Edit section: exploring the bliss pit">edit</a><span class="mw-editsection-bracket">]</span></span></h1>
+<p><i>conductive</i>&#160;: heat
+</p><p><i>circular grill</i> ∈ <i>conductive Table-type objects</i> 
+</p><p><i>macros</i> ≈ macross&#160;? ❌
+</p>
+<ul><li><i>a group of parks</i> <b>CONTAINS</b> <i>meat</i></li>
+<li><i>a group of parks</i> <b>CONTAINS</b> <i>Table-type objects</i></li></ul>
+<p><i>A bliss-pit</i> = <i>a large dug-out pit</i>
+</p><p><i>source</i>&#160;:  process of sourcing a <i>circular grill</i> from a reduction of a <i>group of parks</i>
+</p><p>a group: set + operation
+group representation, as matrices; operator: matrix multiplication ... can't quite get a <i>group</i> formulation
+</p><p><i><b>Dogs</b></i> will eat <i><b>meat</b></i> they <i><b>can reach</b></i> off of the <i><b>grills</b></i>.
+</p><p>There are dogs. There are grills. There is meat. Some meat is reachable. Reachable meat is eaten (from grills).
+</p>
+<ol><li>if the current <i>conductive Table-type object</i> is a grill, a non-grill is sourced and thrown into the pit</li>
+<li>
+<ul><li>meat <i>reachable</i> spatio-temporal state causes the meat to be eaten from a grill, or burnt otherwise, Attention shifts to the next <i>conductive Table-type object</i>.</li>
+<li>meat <i>unreachable</i> spatio-temporal state, if the current <i>conductive Table-type object</i> is a grill, another grill is sourced (in addition to the non-grill that was sourced at 1.) and thrown into the pit.</li></ul></li>
+<li>transition to next spatio-temporal state</li></ol>
+<p><b>python interpreter: ablisspit.py</b>
+</p>
+<pre>import random, sys
+
+ADJ = [ 'metal', 'rusty', 'brass', 'bronze', 'chrome-plated', 'steel', 'aluminium', 'chromium', 'iron', 'cast iron', 'copper', 'tarnished', 'corroded', 'dented', 'shiny', 'gleaming', 'scratched', 'embossed', 'electroplated', 'enamelled', ]
+THING = [ 'footstool', 'barstool', 'side-table', 'coffee table', 'bench', 'speaker housing', 'appliance case', 'drum', 'bathtub', 'tabletop', 'shelving fragment', 'stool', 'miniature cabinet', 'worktop', 'container', 'sink', ]
+
+def nongrill(n):
+    random.seed(n)
+    return f'{random.choice(ADJ)} {random.choice(THING)}'
+
+def indef(s, upper=0):
+    eu = 'n' if s[0] in 'aeiou' else ''
+    return f'{"aA"[upper]}{eu} {s}'
+
+def main():
+    pit_state = sys.argv[1]
+    objects = sys.argv[2]
+    adj = object_ptr = pit_ptr = 0
+    print(f'Bliss Pit spatio-temporal dimensionality reduction: {pit_state}')
+    print('Initial table-like objects:', ', '.join('circular grill' if obj == 'G' else nongrill(i) for i, obj in enumerate(objects)))
+    print('#'*18)
+    while object_ptr &lt; len(objects):
+        state = pit_state[pit_ptr&#160;% len(pit_state)]
+        table_like = objects[object_ptr]
+        name = 'circular grill' if table_like == 'G' else nongrill(object_ptr)
+        verb = 'continue' if adj == 'the same' else 'are'
+        thing = indef(name) if not adj else f'{adj} {name}'
+        print(f'\nThe dogs in the bliss pit {verb} snarling and yapping at {thing}.')
+        if table_like == 'G':
+            newname = nongrill(len(objects))
+            print(f'{indef(newname, 1)} is sourced and tumbles into the pit.')
+            objects += 'n'
+        if state == 'r':
+            if table_like == 'G':
+                print(f'The dogs snatch the meat from the {name} and hungrily devour it.')
+            else:
+                print(f'The meat on the {name} burns. The dogs gnash their teeth and salivate wildly.')
+            object_ptr += 1
+            adj = 'a new'
+        elif state == 'u':
+            print(f'The dogs cannot reach the {name}. They snarl in fury.')
+            adj = 'the same'
+            if table_like == 'G':
+                print('A circular grill is sourced and tumbles into the pit.')
+                objects += 'G'
+        pit_ptr += 1
+    print('\nThere are no more conductive table-like objects cooking meat in the pit!')
+    print('The dogs rage without meat.')
+
+if __name__ == '__main__':
+    main()
+</pre>
+<p>running <a href="/wiki/Grill_Tag#Example" title="Grill Tag">Grill Tag#Example</a>:
+</p>
+<pre>   python ablisspit.py rurur GGnGGn
+</pre>
+<p>produces:
+</p>
+<pre>Bliss Pit spatio-temporal dimensionality reduction: rurur
+Initial table-like objects: circular grill, circular grill, rusty side-table, circular grill, circular grill, enamelled bathtub
+##################
+
+The dogs in the bliss pit are snarling and yapping at a circular grill.
+An electroplated side-table is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+A copper bench is sourced and tumbles into the pit.
+The dogs cannot reach the circular grill. They snarl in fury.
+A circular grill is sourced and tumbles into the pit.
+
+The dogs in the bliss pit continue snarling and yapping at the same circular grill.
+A shiny stool is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new rusty side-table.
+The dogs cannot reach the rusty side-table. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same rusty side-table.
+The meat on the rusty side-table burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+An electroplated barstool is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+A shiny container is sourced and tumbles into the pit.
+The dogs cannot reach the circular grill. They snarl in fury.
+A circular grill is sourced and tumbles into the pit.
+
+The dogs in the bliss pit continue snarling and yapping at the same circular grill.
+An iron tabletop is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new enamelled bathtub.
+The dogs cannot reach the enamelled bathtub. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same enamelled bathtub.
+The meat on the enamelled bathtub burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new electroplated side-table.
+The meat on the electroplated side-table burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new copper bench.
+The dogs cannot reach the copper bench. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same copper bench.
+The meat on the copper bench burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+A bronze drum is sourced and tumbles into the pit.
+The dogs cannot reach the circular grill. They snarl in fury.
+A circular grill is sourced and tumbles into the pit.
+
+The dogs in the bliss pit continue snarling and yapping at the same circular grill.
+A tarnished sink is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new shiny stool.
+The meat on the shiny stool burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new electroplated barstool.
+The dogs cannot reach the electroplated barstool. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same electroplated barstool.
+The meat on the electroplated barstool burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new shiny container.
+The dogs cannot reach the shiny container. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same shiny container.
+The meat on the shiny container burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+A scratched worktop is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new iron tabletop.
+The dogs cannot reach the iron tabletop. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same iron tabletop.
+The meat on the iron tabletop burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new bronze drum.
+The dogs cannot reach the bronze drum. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same bronze drum.
+The meat on the bronze drum burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new circular grill.
+A steel coffee table is sourced and tumbles into the pit.
+The dogs snatch the meat from the circular grill and hungrily devour it.
+
+The dogs in the bliss pit are snarling and yapping at a new tarnished sink.
+The dogs cannot reach the tarnished sink. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same tarnished sink.
+The meat on the tarnished sink burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new scratched worktop.
+The dogs cannot reach the scratched worktop. They snarl in fury.
+
+The dogs in the bliss pit continue snarling and yapping at the same scratched worktop.
+The meat on the scratched worktop burns. The dogs gnash their teeth and salivate wildly.
+
+The dogs in the bliss pit are snarling and yapping at a new steel coffee table.
+The meat on the steel coffee table burns. The dogs gnash their teeth and salivate wildly.
+
+There are no more conductive table-like objects cooking meat in the pit!
+The dogs rage without meat.
+</pre>
+<p>Neat spec. Amazed, maybe worried, that it made some kind of sense to me. <a href="/wiki/User:Salpynx" title="User:Salpynx">Salpynx</a> (<a href="/wiki/User_talk:Salpynx" title="User talk:Salpynx">talk</a>) 12:59, 4 May 2026 (UTC)
+</p>
+<h1><span class="mw-headline" id="termination">termination</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Talk:A_bliss-pit&amp;action=edit&amp;section=2" title="Edit section: termination">edit</a><span class="mw-editsection-bracket">]</span></span></h1>
+<p>The above program terminates due to <a href="/w/index.php?title=Abysys&amp;action=edit&amp;redlink=1" class="new" title="Abysys (page does not exist)">Abysys</a>? (unverified claim)
+</p>
+<h2><span class="mw-headline" id="Crystal_completeness">Crystal completeness</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Talk:A_bliss-pit&amp;action=edit&amp;section=3" title="Edit section: Crystal completeness">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>A variant of a bliss-pit 
+</p>
+<pre>import random, sys
+
+ADJ = [ 'lesbian', 'gay', 'bisexual', 'trans', 'queer', 'intersex', 'asexual', '2-spirit', 'nonbinary', ]
+THING = [ 'right', 'left', 'wrong', ]
+
+def nongrill(n):
+    random.seed(n)
+    return f'{random.choice(ADJ)} {random.choice(THING)}'
+
+def indef(s, upper=0):
+    eu = 'n' if s[0] in 'aeiou' else ''
+    return f'{"aA"[upper]}{eu} {s}'
+
+def main():
+    pit_state = sys.argv[1]
+    objects = sys.argv[2]
+    adj = object_ptr = pit_ptr = 0
+    print(f'Bliss Pit spatio-temporal dimensionality reduction: {pit_state}')
+    print('Needs:', ', '.join('right' if obj == 'G' else nongrill(i) for i, obj in enumerate(objects)))
+    print('#'*18)
+    while object_ptr &lt; len(objects):
+        state = pit_state[pit_ptr&#160;% len(pit_state)]
+        table_like = objects[object_ptr]
+        name = 'right' if table_like == 'G' else nongrill(object_ptr)
+        verb = 'need' if adj == 'the same' else 'are'
+        thing = indef(name) if not adj else f'{adj} {name}'
+        print(f'\nThe people {verb} {thing}.')
+        if table_like == 'G':
+            newname = nongrill(len(objects))
+            print(f'{indef(newname, 1)} considered.')
+            objects += 'n'
+        if state == 'r':
+            if table_like == 'G':
+                print(f'The people are {name}.')
+            else:
+                print(f'The {name} people cry.')
+            object_ptr += 1
+            adj = 'a new'
+        elif state == 'u':
+            print(f'The people cannot be {name}. They riot.')
+            adj = 'the same'
+            if table_like == 'G':
+                print('Human rights are the people`s rights.')
+                objects += 'G'
+        pit_ptr += 1
+    print('\nIs this Crystal-complete?')
+    print('Trans Rights!')
+
+if __name__ == '__main__':
+    main()
+</pre>
+<p>Where <code>python lgbtqiablisspit.py rur nGGnGnGnGGnnGnGnGGnnnGnGnGGnnnnGnGnGGnnnnnGnGnGGnnnnnnGnGnGGnnnnnnnGnGnGGnnnnnnnnGnGnGGnnnnnnnnnGnGnGGnnnnnnnnnnGnGnGGnnnnnnnnnnnGnGnGGnnnnnGnGnGGnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnGnG</code>
+</p><p>Outputs "Trans Rights!"
+</p><p>
+Program trace </p><pre>Initial decoded text: Trans Rights!                                                 Initial tape (G/n): nGGnGnGnGGnnGnGnGGnnnGnGnGGnnnnGnGnGGnnnnnGnGnGGnnnnnnGnGnGGnnnnnnnGnGnGGnnnnnnnnGnGnGGnnnnnnnnnGnGnGGnnnnnnnnnnGnGnGGnnnnnnnnnnnGnGnGGnnnnnGnGnGGnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnGnG</pre>
+
+</body>
+</html>
